@@ -2,6 +2,8 @@ import Layout from "@/components/layout";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { ArrowRight, CheckCircle2, Users, Building2, Globe2, Briefcase } from "lucide-react";
+import { FadeIn, StaggerContainer } from "@/components/animations";
+import { motion } from "framer-motion";
 
 // Asset Imports
 import heroImage from "@assets/stock_images/professional_busines_09c23622.jpg";
@@ -30,220 +32,287 @@ export default function Home() {
   return (
     <Layout>
       {/* Hero Section */}
-      <section className="relative h-[600px] md:h-[700px] w-full overflow-hidden">
-        <div 
+      <section className="relative h-[600px] md:h-[750px] w-full overflow-hidden">
+        <motion.div 
+          initial={{ scale: 1.1 }}
+          animate={{ scale: 1 }}
+          transition={{ duration: 10, ease: "linear" }}
           className="absolute inset-0 bg-cover bg-center bg-no-repeat"
           style={{ backgroundImage: `url(${heroImage})` }}
         >
-          <div className="absolute inset-0 bg-gradient-to-r from-slate-900/90 to-slate-900/40" />
-        </div>
+          <div className="absolute inset-0 bg-gradient-to-r from-primary/95 via-primary/70 to-transparent" />
+        </motion.div>
         
         <div className="relative container-custom h-full flex items-center">
-          <div className="max-w-2xl text-white space-y-6 animate-in slide-in-from-left-10 duration-700 fade-in">
-            <div className="inline-block bg-primary/20 backdrop-blur-sm border border-primary/40 px-4 py-1.5 rounded-full text-primary-foreground text-sm font-semibold mb-2">
-              ESTABLISHED 2005
-            </div>
-            <h1 className="text-4xl md:text-6xl font-heading font-extrabold leading-tight">
-              Global Manpower <br/>
-              <span className="text-primary">Solutions Partner</span>
-            </h1>
-            <p className="text-lg md:text-xl text-slate-200 leading-relaxed max-w-xl">
-              Connecting world-class businesses with exceptional talent. 
-              Your trusted partner for international recruitment and workforce management.
-            </p>
-            <div className="flex flex-col sm:flex-row gap-4 pt-4">
-              <Button size="lg" className="bg-primary hover:bg-blue-600 text-lg px-8 h-12 rounded-full shadow-lg hover:shadow-primary/25 transition-all">
-                Find Talent
-              </Button>
-              <Button size="lg" variant="outline" className="bg-white/10 hover:bg-white/20 border-white text-white text-lg px-8 h-12 rounded-full backdrop-blur-sm">
-                Search Jobs
-              </Button>
-            </div>
+          <div className="max-w-3xl text-white space-y-6">
+            <FadeIn delay={0.2} direction="right">
+              <div className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm border border-white/20 px-4 py-2 rounded-full text-white text-sm font-semibold mb-2">
+                <span className="w-2 h-2 rounded-full bg-accent animate-pulse"></span>
+                ESTABLISHED 2005
+              </div>
+            </FadeIn>
+            
+            <FadeIn delay={0.4} direction="up">
+              <h1 className="text-4xl md:text-7xl font-heading font-extrabold leading-tight">
+                Building the Future with <br/>
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-white to-slate-300">Global Talent</span>
+              </h1>
+            </FadeIn>
+            
+            <FadeIn delay={0.6} direction="up">
+              <p className="text-lg md:text-xl text-slate-100 leading-relaxed max-w-xl border-l-4 border-accent pl-6">
+                Connecting world-class businesses with exceptional talent. 
+                Your trusted partner for international recruitment and workforce management.
+              </p>
+            </FadeIn>
+            
+            <FadeIn delay={0.8} direction="up">
+              <div className="flex flex-col sm:flex-row gap-4 pt-6">
+                <Button size="lg" className="bg-accent hover:bg-accent/90 text-primary-foreground font-bold text-lg px-8 h-14 rounded-full shadow-lg hover:shadow-accent/25 transition-all">
+                  Find Talent
+                </Button>
+                <Button size="lg" variant="outline" className="bg-white/5 hover:bg-white/10 border-white/30 text-white text-lg px-8 h-14 rounded-full backdrop-blur-sm">
+                  Search Jobs
+                </Button>
+              </div>
+            </FadeIn>
           </div>
         </div>
       </section>
 
       {/* Stats Section */}
-      <section className="py-12 bg-white -mt-16 relative z-10">
+      <section className="py-12 -mt-20 relative z-10">
         <div className="container-custom">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 bg-white p-8 rounded-xl shadow-xl border border-slate-100">
-            {stats.map((stat, i) => (
-              <div key={i} className="text-center space-y-2 border-r last:border-0 border-slate-100">
-                <div className="text-4xl md:text-5xl font-heading font-bold text-primary">{stat.number}</div>
-                <div className="text-sm md:text-base text-slate-500 font-medium uppercase tracking-wide">{stat.label}</div>
-              </div>
-            ))}
-          </div>
+          <FadeIn direction="up" delay={0.2}>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-8 bg-white/95 backdrop-blur-xl p-10 rounded-2xl shadow-2xl border border-slate-100">
+              {stats.map((stat, i) => (
+                <div key={i} className="text-center space-y-2 border-r last:border-0 border-slate-100">
+                  <div className="text-4xl md:text-5xl font-heading font-bold text-primary">{stat.number}</div>
+                  <div className="text-sm md:text-base text-slate-500 font-medium uppercase tracking-wide">{stat.label}</div>
+                </div>
+              ))}
+            </div>
+          </FadeIn>
         </div>
       </section>
 
       {/* About Section */}
-      <section id="about" className="section-padding bg-slate-50">
+      <section id="about" className="section-padding">
         <div className="container-custom">
           <div className="grid md:grid-cols-2 gap-12 lg:gap-20 items-center">
-            <div className="relative">
-              <div className="absolute -top-4 -left-4 w-24 h-24 bg-primary/10 rounded-tl-3xl -z-10" />
-              <div className="absolute -bottom-4 -right-4 w-24 h-24 bg-primary/10 rounded-br-3xl -z-10" />
-              <img 
-                src={aboutImage} 
-                alt="Business Meeting" 
-                className="rounded-xl shadow-2xl w-full object-cover aspect-[4/3] border-4 border-white"
-              />
-              <div className="absolute bottom-8 left-8 bg-white p-6 rounded-lg shadow-xl max-w-xs hidden md:block">
-                <p className="text-primary font-bold text-xl mb-1">"Excellence in every placement"</p>
-                <p className="text-sm text-slate-500">- CEO Message</p>
+            <FadeIn direction="right">
+              <div className="relative group">
+                <div className="absolute -top-4 -left-4 w-24 h-24 bg-accent/20 rounded-tl-3xl -z-10 group-hover:scale-110 transition-transform duration-500" />
+                <div className="absolute -bottom-4 -right-4 w-24 h-24 bg-primary/10 rounded-br-3xl -z-10 group-hover:scale-110 transition-transform duration-500" />
+                <img 
+                  src={aboutImage} 
+                  alt="Business Meeting" 
+                  className="rounded-xl shadow-2xl w-full object-cover aspect-[4/3] border-4 border-white"
+                />
+                <motion.div 
+                  whileHover={{ y: -5 }}
+                  className="absolute bottom-8 left-8 bg-white/95 backdrop-blur p-6 rounded-lg shadow-xl max-w-xs hidden md:block border-l-4 border-primary"
+                >
+                  <p className="text-primary font-bold text-xl mb-1">"Excellence in every placement"</p>
+                  <p className="text-sm text-slate-500">- CEO Message</p>
+                </motion.div>
               </div>
-            </div>
+            </FadeIn>
             
             <div className="space-y-6">
-              <div className="space-y-2">
-                <h2 className="text-primary font-semibold tracking-wide uppercase text-sm">About SRR Consultancy</h2>
-                <h3 className="text-3xl md:text-4xl font-heading font-bold text-slate-900">
-                  Reliable Manpower Solutions <br/> Since 2005
-                </h3>
-              </div>
-              <p className="text-slate-600 leading-relaxed">
-                SRR Consultancy has been a pioneer in the recruitment industry, providing comprehensive manpower solutions to clients across the Middle East, Europe, and Asia. We specialize in sourcing, screening, and deploying top-tier talent that meets the specific needs of your industry.
-              </p>
-              <p className="text-slate-600 leading-relaxed">
-                With over 18 years of experience, we understand the nuances of international recruitment. Our rigorous selection process ensures that you get not just employees, but valuable assets who contribute to your company's growth.
-              </p>
+              <FadeIn direction="left" delay={0.2}>
+                <div className="space-y-2">
+                  <h2 className="text-accent font-semibold tracking-wide uppercase text-sm flex items-center gap-2">
+                    <span className="w-8 h-[2px] bg-accent"></span>
+                    About SRR Consultancy
+                  </h2>
+                  <h3 className="text-3xl md:text-4xl font-heading font-bold text-primary">
+                    Reliable Manpower Solutions <br/> Since 2005
+                  </h3>
+                </div>
+              </FadeIn>
+
+              <FadeIn direction="left" delay={0.3}>
+                <p className="text-slate-600 leading-relaxed text-lg">
+                  SRR Consultancy has been a pioneer in the recruitment industry, providing comprehensive manpower solutions to clients across the Middle East, Europe, and Asia. We specialize in sourcing, screening, and deploying top-tier talent that meets the specific needs of your industry.
+                </p>
+              </FadeIn>
               
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-4">
+              <StaggerContainer className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-4" delay={0.4}>
                 {["ISO Certified Process", "Global Network", "Industry Specialists", "Fast Turnaround"].map((item) => (
-                  <div key={item} className="flex items-center gap-3">
-                    <CheckCircle2 className="text-primary h-5 w-5" />
+                  <motion.div 
+                    variants={{
+                      hidden: { opacity: 0, x: 20 },
+                      show: { opacity: 1, x: 0 }
+                    }}
+                    key={item} 
+                    className="flex items-center gap-3 bg-white p-3 rounded-lg shadow-sm border border-slate-100"
+                  >
+                    <CheckCircle2 className="text-secondary h-5 w-5" />
                     <span className="font-medium text-slate-700">{item}</span>
-                  </div>
+                  </motion.div>
                 ))}
-              </div>
+              </StaggerContainer>
               
-              <div className="pt-6">
-                <Button className="bg-slate-900 text-white hover:bg-slate-800 rounded-full px-8">
-                  Read More About Us <ArrowRight className="ml-2 h-4 w-4" />
-                </Button>
-              </div>
+              <FadeIn direction="up" delay={0.5}>
+                <div className="pt-6">
+                  <Button className="bg-primary text-white hover:bg-primary/90 rounded-full px-8 h-12 text-lg">
+                    Read More About Us <ArrowRight className="ml-2 h-4 w-4" />
+                  </Button>
+                </div>
+              </FadeIn>
             </div>
           </div>
         </div>
       </section>
 
       {/* Sectors Section */}
-      <section id="sectors" className="section-padding bg-white">
-        <div className="container-custom">
-          <div className="text-center max-w-3xl mx-auto mb-16 space-y-4">
-            <h2 className="text-primary font-semibold tracking-wide uppercase text-sm">Industries We Serve</h2>
-            <h3 className="text-3xl md:text-4xl font-heading font-bold text-slate-900">Specialized Recruitment Across Key Sectors</h3>
-            <p className="text-slate-600">We have deep expertise in sourcing professionals for specialized industries, ensuring technical competency and cultural fit.</p>
-          </div>
+      <section id="sectors" className="section-padding bg-white relative overflow-hidden">
+        {/* Decorative Background Elements */}
+        <div className="absolute top-0 right-0 w-1/3 h-full bg-slate-50 skew-x-12 opacity-50 pointer-events-none" />
+        
+        <div className="container-custom relative">
+          <FadeIn direction="up">
+            <div className="text-center max-w-3xl mx-auto mb-16 space-y-4">
+              <h2 className="text-accent font-semibold tracking-wide uppercase text-sm">Industries We Serve</h2>
+              <h3 className="text-3xl md:text-4xl font-heading font-bold text-primary">Specialized Recruitment Across Key Sectors</h3>
+              <p className="text-slate-600 text-lg">We have deep expertise in sourcing professionals for specialized industries, ensuring technical competency and cultural fit.</p>
+            </div>
+          </FadeIn>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <StaggerContainer className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
             {sectors.map((sector, idx) => (
-              <div key={idx} className="group relative overflow-hidden rounded-xl shadow-lg border border-slate-100 hover:shadow-2xl transition-all duration-300">
+              <motion.div 
+                key={idx}
+                variants={{
+                  hidden: { opacity: 0, y: 30 },
+                  show: { opacity: 1, y: 0 }
+                }}
+                className="group relative overflow-hidden rounded-xl shadow-lg border border-slate-100 hover:shadow-2xl transition-all duration-500"
+              >
                 <div className="aspect-[3/4] overflow-hidden">
                   <img 
                     src={sector.image} 
                     alt={sector.title} 
-                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent opacity-80 group-hover:opacity-90 transition-opacity" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-primary/95 via-primary/50 to-transparent opacity-90 group-hover:opacity-100 transition-opacity" />
                 </div>
                 
                 <div className="absolute bottom-0 left-0 right-0 p-6 text-white translate-y-4 group-hover:translate-y-0 transition-transform duration-300">
+                  <div className="w-12 h-1 bg-accent mb-4 transform origin-left scale-x-0 group-hover:scale-x-100 transition-transform duration-500 delay-100" />
                   <h4 className="text-xl font-bold font-heading mb-2">{sector.title}</h4>
                   <p className="text-sm text-slate-300 opacity-0 group-hover:opacity-100 transition-opacity duration-300 delay-100 mb-4">
                     {sector.desc}
                   </p>
-                  <a href="#" className="inline-flex items-center text-primary-foreground text-sm font-semibold hover:underline">
+                  <a href="#" className="inline-flex items-center text-accent text-sm font-semibold hover:text-white transition-colors">
                     View Positions <ArrowRight className="ml-1 h-3 w-3" />
                   </a>
                 </div>
-              </div>
+              </motion.div>
             ))}
-          </div>
+          </StaggerContainer>
           
-          <div className="mt-12 text-center">
-             <Button variant="outline" className="border-primary text-primary hover:bg-primary hover:text-white rounded-full px-8">
-               View All Industries
-             </Button>
-          </div>
+          <FadeIn direction="up" delay={0.4}>
+            <div className="mt-12 text-center">
+               <Button variant="outline" className="border-primary text-primary hover:bg-primary hover:text-white rounded-full px-8 h-12">
+                 View All Industries
+               </Button>
+            </div>
+          </FadeIn>
         </div>
       </section>
 
       {/* Services Section */}
-      <section id="services" className="section-padding bg-slate-50">
+      <section id="services" className="section-padding">
         <div className="container-custom">
           <div className="grid md:grid-cols-3 gap-8">
             <div className="md:col-span-1 space-y-6">
-              <h2 className="text-primary font-semibold tracking-wide uppercase text-sm">Our Services</h2>
-              <h3 className="text-3xl md:text-4xl font-heading font-bold text-slate-900">Comprehensive HR Solutions</h3>
-              <p className="text-slate-600">
-                From initial screening to final deployment, we handle every aspect of the recruitment lifecycle, making hiring seamless for you.
-              </p>
-              <div className="space-y-4 pt-4">
-                <div className="flex gap-4 p-4 bg-white rounded-lg shadow-sm border border-slate-100">
-                   <div className="bg-primary/10 p-3 rounded-full h-fit">
-                     <Users className="h-6 w-6 text-primary" />
-                   </div>
-                   <div>
-                     <h4 className="font-bold text-slate-900">Recruitment</h4>
-                     <p className="text-sm text-slate-500 mt-1">Sourcing and screening best-fit candidates.</p>
-                   </div>
-                </div>
-                <div className="flex gap-4 p-4 bg-white rounded-lg shadow-sm border border-slate-100">
-                   <div className="bg-primary/10 p-3 rounded-full h-fit">
-                     <Globe2 className="h-6 w-6 text-primary" />
-                   </div>
-                   <div>
-                     <h4 className="font-bold text-slate-900">Visa & Migration</h4>
-                     <p className="text-sm text-slate-500 mt-1">End-to-end documentation and processing.</p>
-                   </div>
-                </div>
-                <div className="flex gap-4 p-4 bg-white rounded-lg shadow-sm border border-slate-100">
-                   <div className="bg-primary/10 p-3 rounded-full h-fit">
-                     <Briefcase className="h-6 w-6 text-primary" />
-                   </div>
-                   <div>
-                     <h4 className="font-bold text-slate-900">Training</h4>
-                     <p className="text-sm text-slate-500 mt-1">Skill enhancement and cultural orientation.</p>
-                   </div>
-                </div>
-              </div>
+              <FadeIn direction="right">
+                <h2 className="text-accent font-semibold tracking-wide uppercase text-sm">Our Services</h2>
+                <h3 className="text-3xl md:text-4xl font-heading font-bold text-primary">Comprehensive HR Solutions</h3>
+                <p className="text-slate-600 text-lg">
+                  From initial screening to final deployment, we handle every aspect of the recruitment lifecycle.
+                </p>
+              </FadeIn>
+              
+              <StaggerContainer className="space-y-4 pt-4" delay={0.2}>
+                {[
+                  { icon: Users, title: "Recruitment", desc: "Sourcing and screening best-fit candidates." },
+                  { icon: Globe2, title: "Visa & Migration", desc: "End-to-end documentation and processing." },
+                  { icon: Briefcase, title: "Training", desc: "Skill enhancement and cultural orientation." }
+                ].map((service, i) => (
+                  <motion.div 
+                    key={i}
+                    variants={{
+                      hidden: { opacity: 0, x: -20 },
+                      show: { opacity: 1, x: 0 }
+                    }}
+                    className="flex gap-4 p-5 bg-white rounded-xl shadow-sm border border-slate-100 hover:shadow-md hover:border-primary/20 transition-all cursor-default"
+                  >
+                     <div className="bg-primary/5 p-3 rounded-full h-fit">
+                       <service.icon className="h-6 w-6 text-primary" />
+                     </div>
+                     <div>
+                       <h4 className="font-bold text-primary text-lg">{service.title}</h4>
+                       <p className="text-sm text-slate-500 mt-1">{service.desc}</p>
+                     </div>
+                  </motion.div>
+                ))}
+              </StaggerContainer>
             </div>
             
-            <div className="md:col-span-2 relative h-[500px] rounded-2xl overflow-hidden shadow-2xl">
-               <img src={logisticsImage} alt="Global Operations" className="absolute inset-0 w-full h-full object-cover" />
-               <div className="absolute inset-0 bg-slate-900/60 flex items-center justify-center p-8 text-center">
-                 <div className="max-w-md space-y-6">
-                   <h3 className="text-3xl font-heading font-bold text-white">Ready to build your dream team?</h3>
-                   <p className="text-slate-200">
-                     Partner with SRR Consultancy for reliable, efficient, and compliant manpower solutions tailored to your project needs.
-                   </p>
-                   <Button size="lg" className="bg-primary hover:bg-blue-600 text-white rounded-full px-8 mt-4">
-                     Request a Consultation
-                   </Button>
+            <FadeIn direction="left" delay={0.3} className="md:col-span-2 h-full">
+              <div className="relative h-full min-h-[500px] rounded-2xl overflow-hidden shadow-2xl group">
+                 <img 
+                  src={logisticsImage} 
+                  alt="Global Operations" 
+                  className="absolute inset-0 w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105" 
+                />
+                 <div className="absolute inset-0 bg-primary/80 mix-blend-multiply" />
+                 <div className="absolute inset-0 bg-gradient-to-t from-primary via-transparent to-transparent" />
+                 
+                 <div className="absolute inset-0 flex items-center justify-center p-8 text-center">
+                   <div className="max-w-md space-y-6">
+                     <h3 className="text-3xl md:text-4xl font-heading font-bold text-white">Ready to build your dream team?</h3>
+                     <p className="text-slate-200 text-lg">
+                       Partner with SRR Consultancy for reliable, efficient, and compliant manpower solutions.
+                     </p>
+                     <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+                       <Button size="lg" className="bg-accent hover:bg-accent/90 text-primary-foreground font-bold rounded-full px-8 mt-4 h-14 text-lg shadow-lg shadow-accent/20">
+                         Request a Consultation
+                       </Button>
+                     </motion.div>
+                   </div>
                  </div>
-               </div>
-            </div>
+              </div>
+            </FadeIn>
           </div>
         </div>
       </section>
 
       {/* Contact CTA */}
-      <section id="contact" className="py-20 bg-primary text-white">
-         <div className="container-custom text-center space-y-8">
-           <h2 className="text-3xl md:text-5xl font-heading font-bold">Get in Touch With Us</h2>
-           <p className="text-xl text-blue-100 max-w-2xl mx-auto">
-             Whether you're an employer looking for talent or a professional seeking opportunities, we're here to help.
-           </p>
-           <div className="flex flex-col sm:flex-row justify-center gap-6 pt-4">
-             <Button variant="secondary" size="lg" className="h-14 px-8 text-lg rounded-full font-bold text-primary">
-               Contact Support
-             </Button>
-             <Button variant="outline" size="lg" className="h-14 px-8 text-lg rounded-full border-2 border-white text-white hover:bg-white/10">
-               Submit Resume
-             </Button>
-           </div>
+      <section id="contact" className="py-24 bg-primary text-white relative overflow-hidden">
+         <div className="absolute inset-0 opacity-10 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-white via-transparent to-transparent" />
+         
+         <div className="container-custom text-center space-y-8 relative z-10">
+           <FadeIn direction="up">
+             <h2 className="text-3xl md:text-5xl font-heading font-bold">Get in Touch With Us</h2>
+             <p className="text-xl text-slate-300 max-w-2xl mx-auto mt-4">
+               Whether you're an employer looking for talent or a professional seeking opportunities, we're here to help.
+             </p>
+           </FadeIn>
+           
+           <FadeIn direction="up" delay={0.2}>
+             <div className="flex flex-col sm:flex-row justify-center gap-6 pt-8">
+               <Button variant="secondary" size="lg" className="h-16 px-10 text-lg rounded-full font-bold text-primary bg-white hover:bg-slate-100 shadow-xl">
+                 Contact Support
+               </Button>
+               <Button variant="outline" size="lg" className="h-16 px-10 text-lg rounded-full border-2 border-white/20 text-white hover:bg-white/10 backdrop-blur-sm">
+                 Submit Resume
+               </Button>
+             </div>
+           </FadeIn>
          </div>
       </section>
     </Layout>

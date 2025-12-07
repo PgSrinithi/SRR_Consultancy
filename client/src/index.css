@@ -128,3 +128,22 @@
 .card-hover {
   @apply transition-all duration-300 hover:shadow-lg hover:-translate-y-1;
 }
+
+/* Animated Background */
+@keyframes gradient-move {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+.animated-bg {
+  background: linear-gradient(-45deg, hsl(var(--background)), hsl(var(--muted)), hsl(210, 30%, 98%), hsl(var(--background)));
+  background-size: 400% 400%;
+  animation: gradient-move 15s ease infinite;
+}

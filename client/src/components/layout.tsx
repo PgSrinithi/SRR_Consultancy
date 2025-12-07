@@ -26,7 +26,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   ];
 
   return (
-    <div className="flex min-h-screen flex-col font-sans">
+    <div className="flex min-h-screen flex-col font-sans animated-bg">
       {/* Top Bar - Corporate Style */}
       <div className="bg-primary text-primary-foreground py-2 text-sm hidden md:block">
         <div className="container-custom flex justify-between items-center">
