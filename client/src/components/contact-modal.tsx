@@ -131,23 +131,32 @@ export function ContactModal({ children }: { children: React.ReactNode }) {
               )}
             />
 
-            <FormItem>
-               <FormLabel className="text-foreground/80">Resume / Document</FormLabel>
-               <div className="flex items-center gap-2 p-2 border border-dashed border-slate-300 rounded-md bg-slate-50 hover:bg-slate-100 transition-colors cursor-pointer relative">
-                 <Upload className="h-5 w-5 text-muted-foreground" />
-                 <span className="text-sm text-muted-foreground">Click to upload file (PDF, DOCX)</span>
-                 <Input 
-                   type="file" 
-                   className="absolute inset-0 opacity-0 cursor-pointer" 
-                   accept=".pdf,.doc,.docx"
-                   onChange={(e) => {
-                     // Handle file change if needed for preview
-                     console.log(e.target.files);
-                   }}
-                 />
-               </div>
-               <p className="text-xs text-muted-foreground mt-1">Max file size: 5MB</p>
-            </FormItem>
+            <FormField
+              control={form.control}
+              name="resume"
+              render={({ field: { value, onChange, ...fieldProps } }) => (
+                <FormItem>
+                  <FormLabel className="text-foreground/80">Resume / Document</FormLabel>
+                  <FormControl>
+                    <div className="flex items-center gap-2 p-2 border border-dashed border-slate-300 rounded-md bg-slate-50 hover:bg-slate-100 transition-colors cursor-pointer relative">
+                      <Upload className="h-5 w-5 text-muted-foreground" />
+                      <span className="text-sm text-muted-foreground">Click to upload file (PDF, DOCX)</span>
+                      <Input 
+                        {...fieldProps}
+                        type="file" 
+                        className="absolute inset-0 opacity-0 cursor-pointer" 
+                        accept=".pdf,.doc,.docx"
+                        onChange={(e) => {
+                          onChange(e.target.files ? e.target.files[0] : null);
+                        }}
+                      />
+                    </div>
+                  </FormControl>
+                  <p className="text-xs text-muted-foreground mt-1">Max file size: 5MB</p>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
 
             <div className="pt-2">
               <Button type="submit" className="w-full bg-primary hover:bg-primary/90 text-white font-bold h-11" disabled={isSubmitting}>
