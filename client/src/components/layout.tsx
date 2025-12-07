@@ -7,22 +7,47 @@ import logoImage from "@assets/WhatsApp_Image_2025-12-07_at_11.30.59_AM_17650872
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   const [isScrolled, setIsScrolled] = useState(false);
+  const [activeSection, setActiveSection] = useState("home");
   const [location] = useLocation();
 
   useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 10);
+      
+      // Handle "Home" active state when at the top
+      if (window.scrollY < 100) {
+        setActiveSection("home");
+      }
     };
+    
+    // Intersection Observer for sections
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            setActiveSection(entry.target.id);
+          }
+        });
+      },
+      { threshold: 0.3, rootMargin: "-80px 0px -20% 0px" } 
+    );
+
+    const sections = document.querySelectorAll("section[id]");
+    sections.forEach((section) => observer.observe(section));
+
     window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+      sections.forEach((section) => observer.unobserve(section));
+    };
   }, []);
 
   const navLinks = [
-    { name: "Home", href: "/" },
-    { name: "About Us", href: "#about" },
-    { name: "Sectors", href: "#sectors" },
-    { name: "Services", href: "#services" },
-    { name: "Contact", href: "#contact" },
+    { name: "Home", href: "/", id: "home" },
+    { name: "About Us", href: "#about", id: "about" },
+    { name: "Sectors", href: "#sectors", id: "sectors" },
+    { name: "Services", href: "#services", id: "services" },
+    { name: "Contact", href: "#contact", id: "contact" },
   ];
 
   return (
@@ -75,7 +100,11 @@ export default function Layout({ children }: { children: React.ReactNode }) {
               <a 
                 key={link.name} 
                 href={link.href}
-                className="text-sm font-semibold text-foreground/80 hover:text-primary transition-colors uppercase tracking-wide border-b-2 border-transparent hover:border-accent pb-0.5"
+                className={`text-sm font-semibold transition-colors uppercase tracking-wide border-b-2 pb-0.5 ${
+                  activeSection === link.id 
+                    ? "text-primary border-accent" 
+                    : "text-foreground/80 hover:text-primary border-transparent hover:border-accent"
+                }`}
               >
                 {link.name}
               </a>
@@ -101,7 +130,11 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                   <a
                     key={link.name}
                     href={link.href}
-                    className="text-lg font-medium hover:text-primary transition-colors block py-3 border-b border-border/50"
+                    className={`text-lg font-medium transition-colors block py-3 border-b ${
+                      activeSection === link.id
+                        ? "text-primary border-accent font-bold"
+                        : "text-foreground hover:text-primary border-border/50"
+                    }`}
                   >
                     {link.name}
                   </a>
