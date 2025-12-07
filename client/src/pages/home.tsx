@@ -1,3 +1,4 @@
+import { ContactModal } from "@/components/contact-modal";
 import Layout from "@/components/layout";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -68,9 +69,11 @@ export default function Home() {
             
             <FadeIn delay={0.8} direction="up">
               <div className="flex flex-col sm:flex-row gap-4 pt-6">
-                <Button size="lg" className="bg-accent hover:bg-accent/90 text-primary-foreground font-bold text-lg px-8 h-14 rounded-full shadow-lg hover:shadow-accent/25 transition-all">
-                  Find Talent
-                </Button>
+                <ContactModal>
+                  <Button size="lg" className="bg-accent hover:bg-accent/90 text-primary-foreground font-bold text-lg px-8 h-14 rounded-full shadow-lg hover:shadow-accent/25 transition-all">
+                    Find Talent
+                  </Button>
+                </ContactModal>
                 <Button size="lg" variant="outline" className="bg-white/5 hover:bg-white/10 border-white/30 text-white text-lg px-8 h-14 rounded-full backdrop-blur-sm">
                   Search Jobs
                 </Button>
@@ -279,9 +282,11 @@ export default function Home() {
                        Partner with SRR Consultancy for reliable, efficient, and compliant manpower solutions.
                      </p>
                      <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-                       <Button size="lg" className="bg-accent hover:bg-accent/90 text-primary-foreground font-bold rounded-full px-8 mt-4 h-14 text-lg shadow-lg shadow-accent/20">
-                         Request a Consultation
-                       </Button>
+                       <ContactModal>
+                         <Button size="lg" className="bg-accent hover:bg-accent/90 text-primary-foreground font-bold rounded-full px-8 mt-4 h-14 text-lg shadow-lg shadow-accent/20">
+                           Request a Consultation
+                         </Button>
+                       </ContactModal>
                      </motion.div>
                    </div>
                  </div>
@@ -305,12 +310,16 @@ export default function Home() {
            
            <FadeIn direction="up" delay={0.2}>
              <div className="flex flex-col sm:flex-row justify-center gap-6 pt-8">
-               <Button variant="secondary" size="lg" className="h-16 px-10 text-lg rounded-full font-bold text-primary bg-white hover:bg-slate-100 shadow-xl">
-                 Contact Support
-               </Button>
-               <Button variant="outline" size="lg" className="h-16 px-10 text-lg rounded-full border-2 border-white/20 text-white hover:bg-white/10 backdrop-blur-sm">
-                 Submit Resume
-               </Button>
+               <ContactModal>
+                 <Button variant="secondary" size="lg" className="h-16 px-10 text-lg rounded-full font-bold text-primary bg-white hover:bg-slate-100 shadow-xl">
+                   Contact Support
+                 </Button>
+               </ContactModal>
+               <ContactModal>
+                 <Button variant="outline" size="lg" className="h-16 px-10 text-lg rounded-full border-2 border-white/20 text-white hover:bg-white/10 backdrop-blur-sm">
+                   Submit Resume
+                 </Button>
+               </ContactModal>
              </div>
            </FadeIn>
          </div>

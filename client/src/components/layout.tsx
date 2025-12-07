@@ -3,6 +3,7 @@ import { Menu, X, Phone, Mail, Facebook, Twitter, Linkedin, Instagram, MapPin } 
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { ContactModal } from "@/components/contact-modal";
 import logoImage from "@assets/WhatsApp_Image_2025-12-07_at_11.30.59_AM_1765087278704.jpeg";
 
 export default function Layout({ children }: { children: React.ReactNode }) {
@@ -109,9 +110,11 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                 {link.name}
               </a>
             ))}
-            <Button className="bg-primary hover:bg-primary/90 text-white shadow-md rounded-full px-6 border border-primary hover:border-accent transition-all">
-              Get in Touch
-            </Button>
+            <ContactModal>
+              <Button className="bg-primary hover:bg-primary/90 text-white shadow-md rounded-full px-6 border border-primary hover:border-accent transition-all">
+                Get in Touch
+              </Button>
+            </ContactModal>
           </nav>
 
           {/* Mobile Nav */}
@@ -139,9 +142,11 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                     {link.name}
                   </a>
                 ))}
-                <Button className="w-full mt-6 bg-primary hover:bg-primary/90 text-white">
-                  Contact Us
-                </Button>
+                <ContactModal>
+                  <Button className="w-full mt-6 bg-primary hover:bg-primary/90 text-white">
+                    Contact Us
+                  </Button>
+                </ContactModal>
               </nav>
             </SheetContent>
           </Sheet>
