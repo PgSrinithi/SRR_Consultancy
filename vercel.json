@@ -1,7 +1,7 @@
 {
   "buildCommand": "npm run build",
   "outputDirectory": "dist/public",
-  "framework": "other",
+  "framework": "express",
   "regions": ["iad1"],
   "functions": {
     "api/index.ts": {
