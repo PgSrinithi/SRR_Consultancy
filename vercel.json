@@ -1,7 +1,7 @@
 {
   "buildCommand": "npm run build",
   "outputDirectory": "dist/public",
-  "framework": "vite",
+  "framework": null,
   "nodeVersion": "18.x",
   "functions": {
     "api/**/*.ts": {
@@ -10,19 +10,20 @@
   },
   "routes": [
     {
-      "src": "/api/(.*)",
-      "dest": "/api/$1"
+      "src": "/api/apply-job",
+      "dest": "/api/apply-job.ts"
     },
     {
       "src": "/assets/(.*)",
       "dest": "/assets/$1"
     },
     {
-      "src": "/(.*)",
+      "src": "/(favicon.png|opengraph.jpg)",
+      "dest": "/$1"
+    },
+    {
+      "src": "/(?!api/)(.*)",
       "dest": "/index.html"
     }
-  ],
-  "env": {
-    "NODE_ENV": "production"
-  }
+  ]
 }
