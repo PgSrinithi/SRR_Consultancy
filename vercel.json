@@ -1,11 +1,22 @@
 {
+  "version": 2,
   "buildCommand": "npm run build",
-  "outputDirectory": "dist/public",
-  "framework": "express",
-  "regions": ["iad1"],
-  "functions": {
-    "api/index.ts": {
-      "maxDuration": 30
+  "outputDirectory": "dist",
+  "env": {
+    "NODE_ENV": "production"
+  },
+  "routes": [
+    {
+      "src": "/api/(.*)",
+      "dest": "/index.cjs"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/public/$1"
+    },
+    {
+      "src": "/",
+      "dest": "/public/index.html"
     }
-  }
+  ]
 }
