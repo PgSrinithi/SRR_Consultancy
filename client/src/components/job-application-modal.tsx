@@ -9,6 +9,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { useToast } from "@/hooks/use-toast";
 import { Loader2, Upload } from "lucide-react";
+import { API_BASE_URL } from "@/lib/api";
 
 const jobApplicationSchema = z.object({
   jobTitle: z.string(),
@@ -45,7 +46,7 @@ export function JobApplicationModal({ jobTitle, children }: JobApplicationModalP
     setIsSubmitting(true);
     
     try {
-      const response = await fetch("/api/apply-job", {
+      const response = await fetch(`${API_BASE_URL}/api/apply-job`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
