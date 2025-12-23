@@ -46,7 +46,7 @@ export function JobApplicationModal({ jobTitle, children }: JobApplicationModalP
     setIsSubmitting(true);
     
     try {
-      const response = await fetch(`${API_BASE_URL}/api/apply-job`, {
+      const response = await fetch("/api/apply-job", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
