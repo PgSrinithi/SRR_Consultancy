@@ -1,18 +1,50 @@
 {
   "version": 2,
   "buildCommand": "npm run build",
-  "outputDirectory": "dist",
+  "outputDirectory": "dist/public",
   "env": {
     "NODE_ENV": "production"
   },
   "routes": [
     {
-      "src": "/public/(.*)",
-      "dest": "/public/$1"
+      "src": "/.*\\.js$",
+      "dest": "/$0"
+    },
+    {
+      "src": "/.*\\.css$",
+      "dest": "/$0"
+    },
+    {
+      "src": "/.*\\.svg$",
+      "dest": "/$0"
+    },
+    {
+      "src": "/.*\\.png$",
+      "dest": "/$0"
+    },
+    {
+      "src": "/.*\\.jpg$",
+      "dest": "/$0"
+    },
+    {
+      "src": "/.*\\.jpeg$",
+      "dest": "/$0"
+    },
+    {
+      "src": "/.*\\.gif$",
+      "dest": "/$0"
+    },
+    {
+      "src": "/.*\\.webp$",
+      "dest": "/$0"
+    },
+    {
+      "src": "/.*\\.woff2?$",
+      "dest": "/$0"
     },
     {
       "src": "/(.*)",
-      "dest": "/public/index.html"
+      "dest": "/index.html"
     }
   ]
 }
