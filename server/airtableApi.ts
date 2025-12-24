@@ -20,7 +20,7 @@ export async function fetchIndustries() {
       id: record.id,
       ...record.fields,
     }));
-    
+    console.log('Mapped Records from Airtable Industry:', mappedRecords,process.env.AIRTABLE_BASE_ID);
     return mappedRecords;
   } catch (error) {
     console.error('[Airtable] Error fetching industries from Airtable:', error);
