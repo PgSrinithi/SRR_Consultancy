@@ -214,7 +214,6 @@ export default function Jobs() {
     },
   ];
 
-  const [, navigate] = useLocation();
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedIndustries, setSelectedIndustries] = useState<string[]>([]);
   const [selectedLocations, setSelectedLocations] = useState<string[]>([]);
