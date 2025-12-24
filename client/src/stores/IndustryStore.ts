@@ -25,6 +25,7 @@ class IndustryStore {
       }
       const data = await response.json();
       this.industries = data;
+      console.log('Fetched Industries:', this.industries);
     } catch (err) {
       this.error = err instanceof Error ? err : new Error('Failed to load industries');
       this.industries = [];
