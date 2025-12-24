@@ -16,10 +16,13 @@ export async function fetchIndustries() {
       .select()
       .all();
 
-    const mappedRecords = records.map(record => ({
+    const mappedRecords = records
+    .map(record => ({
       id: record.id,
-      ...record.fields,
-    }));
+      name: record.fields.Name ?? null, // normalize
+      description: record.fields.Description ?? null,
+    }))
+    .filter(item => item.name); // 🔥 remove empty rows
     console.log('Mapped Records from Airtable Industry:', mappedRecords,process.env.AIRTABLE_BASE_ID);
     return mappedRecords;
   } catch (error) {
