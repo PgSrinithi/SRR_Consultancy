@@ -10,12 +10,23 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { useToast } from "@/hooks/use-toast";
 import { Loader2, Upload } from "lucide-react";
 import { API_BASE_URL } from "@/lib/api";
+import {
+  JOB_APPLICATION_TITLE,
+  JOB_APPLICATION_FORM_LABELS,
+  JOB_APPLICATION_PLACEHOLDERS,
+  VALIDATION_MESSAGES,
+  RESUME_ACCEPTED_FORMATS,
+  RESUME_ACCEPT_TYPES,
+  RESUME_UPLOAD_TEXT,
+  BUTTON_TEXT,
+  TOAST_MESSAGES,
+} from "@/lib/constants";
 
 const jobApplicationSchema = z.object({
   jobTitle: z.string(),
-  applicantName: z.string().min(2, "Name must be at least 2 characters"),
-  applicantEmail: z.string().email("Invalid email address"),
-  applicantPhone: z.string().min(10, "Phone number must be at least 10 digits"),
+  applicantName: z.string().min(2, VALIDATION_MESSAGES.nameRequired),
+  applicantEmail: z.string().email(VALIDATION_MESSAGES.emailInvalid),
+  applicantPhone: z.string().min(10, VALIDATION_MESSAGES.phoneInvalid),
   message: z.string().optional(),
   resume: z.any().optional(),
 });
@@ -63,15 +74,15 @@ export function JobApplicationModal({ jobTitle, children }: JobApplicationModalP
       setFileName(null);
       
       toast({
-        title: "Application Submitted Successfully",
-        description: "Thank you for applying. We will review your application and contact you soon.",
+        title: TOAST_MESSAGES.applicationSuccess.title,
+        description: TOAST_MESSAGES.applicationSuccess.description,
         duration: 5000,
       });
     } catch (error) {
       console.error("Error submitting application:", error);
       toast({
-        title: "Error",
-        description: "Failed to submit application. Please try again.",
+        title: TOAST_MESSAGES.applicationError.title,
+        description: TOAST_MESSAGES.applicationError.description,
         variant: "destructive",
         duration: 5000,
       });
@@ -87,7 +98,7 @@ export function JobApplicationModal({ jobTitle, children }: JobApplicationModalP
       </DialogTrigger>
       <DialogContent className="sm:max-w-[500px] bg-white border-none shadow-2xl">
         <DialogHeader>
-          <DialogTitle className="text-2xl font-heading font-bold text-primary">Apply for Position</DialogTitle>
+          <DialogTitle className="text-2xl font-heading font-bold text-primary">{JOB_APPLICATION_TITLE}</DialogTitle>
           <DialogDescription>
             {jobTitle}
           </DialogDescription>
@@ -100,9 +111,9 @@ export function JobApplicationModal({ jobTitle, children }: JobApplicationModalP
               name="applicantName"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="text-foreground/80">Full Name</FormLabel>
+                  <FormLabel className="text-foreground/80">{JOB_APPLICATION_FORM_LABELS.applicantName}</FormLabel>
                   <FormControl>
-                    <Input placeholder="John Doe" {...field} className="bg-slate-50 border-slate-200 focus:border-accent focus:ring-accent" />
+                    <Input placeholder={JOB_APPLICATION_PLACEHOLDERS.applicantName} {...field} className="bg-slate-50 border-slate-200 focus:border-accent focus:ring-accent" />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -115,9 +126,9 @@ export function JobApplicationModal({ jobTitle, children }: JobApplicationModalP
                 name="applicantEmail"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className="text-foreground/80">Email</FormLabel>
+                    <FormLabel className="text-foreground/80">{JOB_APPLICATION_FORM_LABELS.applicantEmail}</FormLabel>
                     <FormControl>
-                      <Input placeholder="john@example.com" {...field} className="bg-slate-50 border-slate-200 focus:border-accent focus:ring-accent" />
+                      <Input placeholder={JOB_APPLICATION_PLACEHOLDERS.applicantEmail} {...field} className="bg-slate-50 border-slate-200 focus:border-accent focus:ring-accent" />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -129,9 +140,9 @@ export function JobApplicationModal({ jobTitle, children }: JobApplicationModalP
                 name="applicantPhone"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className="text-foreground/80">Phone</FormLabel>
+                    <FormLabel className="text-foreground/80">{JOB_APPLICATION_FORM_LABELS.applicantPhone}</FormLabel>
                     <FormControl>
-                      <Input placeholder="+91 98765 43210" {...field} className="bg-slate-50 border-slate-200 focus:border-accent focus:ring-accent" />
+                      <Input placeholder={JOB_APPLICATION_PLACEHOLDERS.applicantPhone} {...field} className="bg-slate-50 border-slate-200 focus:border-accent focus:ring-accent" />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -144,10 +155,10 @@ export function JobApplicationModal({ jobTitle, children }: JobApplicationModalP
               name="message"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="text-foreground/80">Cover Letter (Optional)</FormLabel>
+                  <FormLabel className="text-foreground/80">{JOB_APPLICATION_FORM_LABELS.message}</FormLabel>
                   <FormControl>
                     <Textarea 
-                      placeholder="Tell us why you're interested in this position..." 
+                      placeholder={JOB_APPLICATION_PLACEHOLDERS.message} 
                       {...field} 
                       className="bg-slate-50 border-slate-200 focus:border-accent focus:ring-accent min-h-[120px]"
                     />
@@ -162,12 +173,12 @@ export function JobApplicationModal({ jobTitle, children }: JobApplicationModalP
               name="resume"
               render={({ field: { value, onChange, ...field } }) => (
                 <FormItem>
-                  <FormLabel className="text-foreground/80">Resume (Optional)</FormLabel>
+                  <FormLabel className="text-foreground/80">{JOB_APPLICATION_FORM_LABELS.resume}</FormLabel>
                   <FormControl>
                     <div className="flex items-center gap-2">
                       <Input
                         type="file"
-                        accept=".pdf,.doc,.docx,.txt"
+                        accept={RESUME_ACCEPT_TYPES}
                         onChange={(e) => {
                           const file = e.target.files?.[0];
                           if (file) {
@@ -185,12 +196,12 @@ export function JobApplicationModal({ jobTitle, children }: JobApplicationModalP
                       >
                         <Upload className="h-4 w-4" />
                         <span className="text-sm text-foreground/80">
-                          {fileName || "Click to upload resume"}
+                          {fileName || RESUME_UPLOAD_TEXT}
                         </span>
                       </label>
                     </div>
                   </FormControl>
-                  <p className="text-xs text-muted-foreground">Accepted formats: PDF, DOC, DOCX, TXT</p>
+                  <p className="text-xs text-muted-foreground">Accepted formats: {RESUME_ACCEPTED_FORMATS}</p>
                   <FormMessage />
                 </FormItem>
               )}
@@ -207,7 +218,7 @@ export function JobApplicationModal({ jobTitle, children }: JobApplicationModalP
                   Submitting...
                 </>
               ) : (
-                "Submit Application"
+                BUTTON_TEXT.submitApplication
               )}
             </Button>
           </form>

@@ -1,10 +1,37 @@
 import { ContactModal } from "@/components/contact-modal";
+import { ClientModal } from "@/components/client-modal";
 import Layout from "@/components/layout";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { ArrowRight, CheckCircle2, Users, Building2, Globe2, Briefcase } from "lucide-react";
 import { FadeIn, StaggerContainer } from "@/components/animations";
 import { motion } from "framer-motion";
+import { useLocation } from "wouter";
+import { useState } from "react";
+import {
+  HERO_TITLE,
+  HERO_DESCRIPTION,
+  HERO_BADGE_TEXT,
+  STATS,
+  ABOUT_BADGE,
+  ABOUT_TITLE,
+  ABOUT_DESCRIPTION,
+  ABOUT_FEATURES,
+  ABOUT_CEO_QUOTE,
+  SECTORS_BADGE,
+  SECTORS_TITLE,
+  SECTORS_DESCRIPTION,
+  SECTOR_NAMES,
+  SERVICES_BADGE,
+  SERVICES_TITLE,
+  SERVICES_DESCRIPTION,
+  SERVICES,
+  SERVICES_CTA_TITLE,
+  SERVICES_CTA_DESCRIPTION,
+  CONTACT_CTA_TITLE,
+  CONTACT_CTA_DESCRIPTION,
+  BUTTON_TEXT,
+} from "@/lib/constants";
 
 // Asset Imports
 import heroImage from "@assets/stock_images/professional_busines_09c23622.jpg";
@@ -15,20 +42,19 @@ import hospitalityImage from "@assets/stock_images/chef_in_commercial_k_f8b13607
 import healthcareImage from "@assets/stock_images/doctor_nurse_hospita_566fd048.jpg";
 import logisticsImage from "@assets/stock_images/global_logistics_wor_3a6eb8f3.jpg";
 
-export default function Home() {
-  const sectors = [
-    { title: "Construction", image: constructionImage, desc: "Skilled civil engineers, masons, and laborers for large-scale projects." },
-    { title: "Oil & Gas", image: oilImage, desc: "Certified technicians and safety experts for onshore and offshore operations." },
-    { title: "Healthcare", image: healthcareImage, desc: "Qualified doctors, nurses, and medical support staff for hospitals." },
-    { title: "Hospitality", image: hospitalityImage, desc: "Experienced chefs, waitstaff, and hotel management professionals." },
-  ];
+const SECTOR_DETAILS: Record<string, { image: string; desc: string }> = {
+  "Construction": { image: constructionImage, desc: "Skilled civil engineers, masons, and laborers for large-scale projects." },
+  "Oil & Gas": { image: oilImage, desc: "Certified technicians and safety experts for onshore and offshore operations." },
+  "Healthcare": { image: healthcareImage, desc: "Qualified doctors, nurses, and medical support staff for hospitals." },
+  "Hospitality": { image: hospitalityImage, desc: "Experienced chefs, waitstaff, and hotel management professionals." },
+  "Logistics": { image: logisticsImage, desc: "Logistics professionals and supply chain experts for global operations." }
+};
 
-  const stats = [
-    { number: "18+", label: "Years Experience" },
-    { number: "50k+", label: "Workers Placed" },
-    { number: "500+", label: "Corporate Clients" },
-    { number: "25+", label: "Countries Served" },
-  ];
+export default function Home() {
+  const [, navigate] = useLocation();
+  const [showAllIndustries, setShowAllIndustries] = useState(false);
+
+  const displayedSectors = showAllIndustries ? SECTOR_NAMES : SECTOR_NAMES.slice(0, 4);
 
   return (
     <Layout>
@@ -49,33 +75,37 @@ export default function Home() {
             <FadeIn delay={0.2} direction="right">
               <div className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm border border-white/20 px-4 py-2 rounded-full text-white text-sm font-semibold mb-2">
                 <span className="w-2 h-2 rounded-full bg-accent animate-pulse"></span>
-                ESTABLISHED 2005
+                {HERO_BADGE_TEXT}
               </div>
             </FadeIn>
             
             <FadeIn delay={0.4} direction="up">
               <h1 className="text-4xl md:text-7xl font-heading font-extrabold leading-tight">
-                Building the Future with <br/>
-                <span className="text-transparent bg-clip-text bg-gradient-to-r from-white to-slate-300">Global Talent</span>
+                {HERO_TITLE.split("<br/>")[0]} <br/>
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-white to-slate-300">{HERO_TITLE.split("<br/>")[1] || ""}</span>
               </h1>
             </FadeIn>
             
             <FadeIn delay={0.6} direction="up">
               <p className="text-lg md:text-xl text-slate-100 leading-relaxed max-w-xl border-l-4 border-accent pl-6">
-                Connecting world-class businesses with exceptional talent. 
-                Your trusted partner for international recruitment and workforce management.
+                {HERO_DESCRIPTION}
               </p>
             </FadeIn>
             
             <FadeIn delay={0.8} direction="up">
               <div className="flex flex-col sm:flex-row gap-4 pt-6">
-                <ContactModal>
-                  <Button size="lg" className="bg-accent hover:bg-accent/90 text-primary-foreground font-bold text-lg px-8 h-14 rounded-full shadow-lg hover:shadow-accent/25 transition-all">
-                    Find Talent
+                <ClientModal>
+                  <Button size="lg" className="bg-accent hover:bg-accent/90 text-primary-foreground font-bold text-lg px-8 h-14 rounded-full shadow-lg hover:shadow-accent/25 transition-all cursor-pointer">
+                    {BUTTON_TEXT.findTalent}
                   </Button>
-                </ContactModal>
-                <Button size="lg" variant="outline" className="bg-white/5 hover:bg-white/10 border-white/30 text-white text-lg px-8 h-14 rounded-full backdrop-blur-sm">
-                  Search Jobs
+                </ClientModal>
+                <Button 
+                  onClick={() => navigate('/jobs')}
+                  size="lg" 
+                  variant="outline" 
+                  className="bg-white/5 hover:bg-white/10 border-white/30 text-white text-lg px-8 h-14 rounded-full backdrop-blur-sm cursor-pointer"
+                >
+                  {BUTTON_TEXT.searchJobs}
                 </Button>
               </div>
             </FadeIn>
@@ -88,7 +118,7 @@ export default function Home() {
         <div className="container-custom">
           <FadeIn direction="up" delay={0.2}>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-8 bg-white/95 backdrop-blur-xl p-10 rounded-2xl shadow-2xl border border-slate-100">
-              {stats.map((stat, i) => (
+              {STATS.map((stat, i) => (
                 <div key={i} className="text-center space-y-2 border-r last:border-0 border-slate-100">
                   <div className="text-4xl md:text-5xl font-heading font-bold text-primary">{stat.number}</div>
                   <div className="text-sm md:text-base text-slate-500 font-medium uppercase tracking-wide">{stat.label}</div>
@@ -116,7 +146,7 @@ export default function Home() {
                   whileHover={{ y: -5 }}
                   className="absolute bottom-8 left-8 bg-white/95 backdrop-blur p-6 rounded-lg shadow-xl max-w-xs hidden md:block border-l-4 border-primary"
                 >
-                  <p className="text-primary font-bold text-xl mb-1">"Excellence in every placement"</p>
+                  <p className="text-primary font-bold text-xl mb-1">"{ABOUT_CEO_QUOTE}"</p>
                   <p className="text-sm text-slate-500">- CEO Message</p>
                 </motion.div>
               </div>
@@ -127,22 +157,22 @@ export default function Home() {
                 <div className="space-y-2">
                   <h2 className="text-accent font-semibold tracking-wide uppercase text-sm flex items-center gap-2">
                     <span className="w-8 h-[2px] bg-accent"></span>
-                    About SRR Consultancy
+                    {ABOUT_BADGE}
                   </h2>
                   <h3 className="text-3xl md:text-4xl font-heading font-bold text-primary">
-                    Reliable Manpower Solutions <br/> Since 2005
+                    {ABOUT_TITLE}
                   </h3>
                 </div>
               </FadeIn>
 
               <FadeIn direction="left" delay={0.3}>
                 <p className="text-slate-600 leading-relaxed text-lg">
-                  SRR Consultancy has been a pioneer in the recruitment industry, providing comprehensive manpower solutions to clients across the Middle East, Europe, and Asia. We specialize in sourcing, screening, and deploying top-tier talent that meets the specific needs of your industry.
+                  {ABOUT_DESCRIPTION}
                 </p>
               </FadeIn>
               
               <StaggerContainer className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-4" delay={0.4}>
-                {["ISO Certified Process", "Global Network", "Industry Specialists", "Fast Turnaround"].map((item) => (
+                {ABOUT_FEATURES.map((item) => (
                   <motion.div 
                     variants={{
                       hidden: { opacity: 0, x: 20 },
@@ -156,14 +186,6 @@ export default function Home() {
                   </motion.div>
                 ))}
               </StaggerContainer>
-              
-              <FadeIn direction="up" delay={0.5}>
-                <div className="pt-6">
-                  <Button className="bg-primary text-white hover:bg-primary/90 rounded-full px-8 h-12 text-lg">
-                    Read More About Us <ArrowRight className="ml-2 h-4 w-4" />
-                  </Button>
-                </div>
-              </FadeIn>
             </div>
           </div>
         </div>
@@ -177,14 +199,18 @@ export default function Home() {
         <div className="container-custom relative">
           <FadeIn direction="up">
             <div className="text-center max-w-3xl mx-auto mb-16 space-y-4">
-              <h2 className="text-accent font-semibold tracking-wide uppercase text-sm">Industries We Serve</h2>
-              <h3 className="text-3xl md:text-4xl font-heading font-bold text-primary">Specialized Recruitment Across Key Sectors</h3>
-              <p className="text-slate-600 text-lg">We have deep expertise in sourcing professionals for specialized industries, ensuring technical competency and cultural fit.</p>
+              <h2 className="text-accent font-semibold tracking-wide uppercase text-sm">{SECTORS_BADGE}</h2>
+              <h3 className="text-3xl md:text-4xl font-heading font-bold text-primary">{SECTORS_TITLE}</h3>
+              <p className="text-slate-600 text-lg">{SECTORS_DESCRIPTION}</p>
             </div>
           </FadeIn>
 
           <StaggerContainer className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {sectors.map((sector, idx) => (
+            {displayedSectors.map((sectorName, idx) => {
+              const sectorData = SECTOR_DETAILS[sectorName];
+              if (!sectorData) return null;
+              
+              return (
               <motion.div 
                 key={idx}
                 variants={{
@@ -195,8 +221,8 @@ export default function Home() {
               >
                 <div className="aspect-[3/4] overflow-hidden">
                   <img 
-                    src={sector.image} 
-                    alt={sector.title} 
+                    src={sectorData.image} 
+                    alt={sectorName} 
                     className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-primary/95 via-primary/50 to-transparent opacity-90 group-hover:opacity-100 transition-opacity" />
@@ -204,23 +230,34 @@ export default function Home() {
                 
                 <div className="absolute bottom-0 left-0 right-0 p-6 text-white translate-y-4 group-hover:translate-y-0 transition-transform duration-300">
                   <div className="w-12 h-1 bg-accent mb-4 transform origin-left scale-x-0 group-hover:scale-x-100 transition-transform duration-500 delay-100" />
-                  <h4 className="text-xl font-bold font-heading mb-2">{sector.title}</h4>
+                  <h4 className="text-xl font-bold font-heading mb-2">{sectorName}</h4>
                   <p className="text-sm text-slate-300 opacity-0 group-hover:opacity-100 transition-opacity duration-300 delay-100 mb-4">
-                    {sector.desc}
+                    {sectorData.desc}
                   </p>
-                  <a href="#" className="inline-flex items-center text-accent text-sm font-semibold hover:text-white transition-colors">
-                    View Positions <ArrowRight className="ml-1 h-3 w-3" />
-                  </a>
+                  <button 
+                    onClick={() => navigate(`/jobs?industry=${encodeURIComponent(sectorName)}`)
+                    }
+                    className="inline-flex items-center text-accent text-sm font-semibold hover:text-white transition-colors cursor-pointer"
+                  >
+                    {BUTTON_TEXT.viewPositions} <ArrowRight className="ml-1 h-3 w-3" />
+                  </button>
                 </div>
               </motion.div>
-            ))}
+            );
+            })}
           </StaggerContainer>
           
           <FadeIn direction="up" delay={0.4}>
             <div className="mt-12 text-center">
-               <Button variant="outline" className="border-primary text-primary hover:bg-primary hover:text-white rounded-full px-8 h-12">
-                 View All Industries
-               </Button>
+               {!showAllIndustries && (
+                 <Button 
+                   onClick={() => setShowAllIndustries(true)}
+                   variant="outline" 
+                   className="border-primary text-primary hover:bg-primary hover:text-white rounded-full px-8 h-12 cursor-pointer"
+                 >
+                   {BUTTON_TEXT.viewAllIndustries}
+                 </Button>
+               )}
             </div>
           </FadeIn>
         </div>
@@ -232,19 +269,15 @@ export default function Home() {
           <div className="grid md:grid-cols-3 gap-8">
             <div className="md:col-span-1 space-y-6">
               <FadeIn direction="right">
-                <h2 className="text-accent font-semibold tracking-wide uppercase text-sm">Our Services</h2>
-                <h3 className="text-3xl md:text-4xl font-heading font-bold text-primary">Comprehensive HR Solutions</h3>
+                <h2 className="text-accent font-semibold tracking-wide uppercase text-sm">{SERVICES_BADGE}</h2>
+                <h3 className="text-3xl md:text-4xl font-heading font-bold text-primary">{SERVICES_TITLE}</h3>
                 <p className="text-slate-600 text-lg">
-                  From initial screening to final deployment, we handle every aspect of the recruitment lifecycle.
+                  {SERVICES_DESCRIPTION}
                 </p>
               </FadeIn>
               
               <StaggerContainer className="space-y-4 pt-4" delay={0.2}>
-                {[
-                  { icon: Users, title: "Recruitment", desc: "Sourcing and screening best-fit candidates." },
-                  { icon: Globe2, title: "Visa & Migration", desc: "End-to-end documentation and processing." },
-                  { icon: Briefcase, title: "Training", desc: "Skill enhancement and cultural orientation." }
-                ].map((service, i) => (
+                {SERVICES.map((service, i) => (
                   <motion.div 
                     key={i}
                     variants={{
@@ -254,11 +287,13 @@ export default function Home() {
                     className="flex gap-4 p-5 bg-white rounded-xl shadow-sm border border-slate-100 hover:shadow-md hover:border-primary/20 transition-all cursor-default"
                   >
                      <div className="bg-primary/5 p-3 rounded-full h-fit">
-                       <service.icon className="h-6 w-6 text-primary" />
+                       {i === 0 && <Users className="h-6 w-6 text-primary" />}
+                       {i === 1 && <Globe2 className="h-6 w-6 text-primary" />}
+                       {i === 2 && <Briefcase className="h-6 w-6 text-primary" />}
                      </div>
                      <div>
                        <h4 className="font-bold text-primary text-lg">{service.title}</h4>
-                       <p className="text-sm text-slate-500 mt-1">{service.desc}</p>
+                       <p className="text-sm text-slate-500 mt-1">{service.description}</p>
                      </div>
                   </motion.div>
                 ))}
@@ -277,14 +312,14 @@ export default function Home() {
                  
                  <div className="absolute inset-0 flex items-center justify-center p-8 text-center">
                    <div className="max-w-md space-y-6">
-                     <h3 className="text-3xl md:text-4xl font-heading font-bold text-white">Ready to build your dream team?</h3>
+                     <h3 className="text-3xl md:text-4xl font-heading font-bold text-white">{SERVICES_CTA_TITLE}</h3>
                      <p className="text-slate-200 text-lg">
-                       Partner with SRR Consultancy for reliable, efficient, and compliant manpower solutions.
+                       {SERVICES_CTA_DESCRIPTION}
                      </p>
                      <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
                        <ContactModal>
                          <Button size="lg" className="bg-accent hover:bg-accent/90 text-primary-foreground font-bold rounded-full px-8 mt-4 h-14 text-lg shadow-lg shadow-accent/20">
-                           Request a Consultation
+                           {BUTTON_TEXT.requestConsultation}
                          </Button>
                        </ContactModal>
                      </motion.div>
@@ -302,22 +337,17 @@ export default function Home() {
          
          <div className="container-custom text-center space-y-8 relative z-10">
            <FadeIn direction="up">
-             <h2 className="text-3xl md:text-5xl font-heading font-bold">Get in Touch With Us</h2>
+             <h2 className="text-3xl md:text-5xl font-heading font-bold">{CONTACT_CTA_TITLE}</h2>
              <p className="text-xl text-slate-300 max-w-2xl mx-auto mt-4">
-               Whether you're an employer looking for talent or a professional seeking opportunities, we're here to help.
+               {CONTACT_CTA_DESCRIPTION}
              </p>
            </FadeIn>
            
            <FadeIn direction="up" delay={0.2}>
              <div className="flex flex-col sm:flex-row justify-center gap-6 pt-8">
                <ContactModal>
-                 <Button variant="secondary" size="lg" className="h-16 px-10 text-lg rounded-full font-bold text-primary bg-white hover:bg-slate-100 shadow-xl">
-                   Contact Support
-                 </Button>
-               </ContactModal>
-               <ContactModal>
-                 <Button variant="outline" size="lg" className="h-16 px-10 text-lg rounded-full border-2 border-white/20 text-white hover:bg-white/10 backdrop-blur-sm">
-                   Submit Resume
+                 <Button variant="secondary" size="lg" className="h-16 px-10 text-lg rounded-full font-bold text-primary bg-white hover:bg-slate-100 shadow-xl cursor-pointer">
+                   {BUTTON_TEXT.contactSupport}
                  </Button>
                </ContactModal>
              </div>

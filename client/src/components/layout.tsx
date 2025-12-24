@@ -4,12 +4,37 @@ import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { ContactModal } from "@/components/contact-modal";
+import { ClientModal } from "@/components/client-modal";
 import logoImage from "@assets/WhatsApp_Image_2025-12-07_at_11.30.59_AM_1765087278704.jpeg";
+import {
+  NAV_LINKS,
+  COMPANY_PHONE,
+  COMPANY_EMAIL,
+  COMPANY_ADDRESS,
+  FOOTER_QUICK_LINKS,
+  FOOTER_INDUSTRIES,
+  BUTTON_TEXT,
+  COMPANY_NAME,
+  COMPANY_ESTABLISHED_YEAR,
+} from "@/lib/constants";
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   const [isScrolled, setIsScrolled] = useState(false);
   const [activeSection, setActiveSection] = useState("home");
   const [location] = useLocation();
+
+  useEffect(() => {
+    // Handle anchor scrolling when page loads or hash changes
+    const hash = window.location.hash;
+    if (hash) {
+      const element = document.getElementById(hash.substring(1));
+      if (element) {
+        setTimeout(() => {
+          element.scrollIntoView({ behavior: 'smooth' });
+        }, 100);
+      }
+    }
+  }, [location]);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -43,15 +68,6 @@ export default function Layout({ children }: { children: React.ReactNode }) {
     };
   }, []);
 
-  const navLinks = [
-    { name: "Home", href: "/", id: "home" },
-    { name: "About Us", href: "#about", id: "about" },
-    { name: "Sectors", href: "#sectors", id: "sectors" },
-    { name: "Services", href: "#services", id: "services" },
-    { name: "Jobs", href: "/jobs", id: "jobs" },
-    { name: "Contact", href: "#contact", id: "contact" },
-  ];
-
   return (
     <div className="flex min-h-screen flex-col font-sans animated-bg">
       {/* Top Bar - Corporate Style */}
@@ -60,11 +76,11 @@ export default function Layout({ children }: { children: React.ReactNode }) {
           <div className="flex gap-6">
             <div className="flex items-center gap-2">
               <Phone className="h-4 w-4 text-accent" />
-              <span>+91 123 456 7890</span>
+              <span>{COMPANY_PHONE}</span>
             </div>
             <div className="flex items-center gap-2">
               <Mail className="h-4 w-4 text-accent" />
-              <span>info@srrconsultancy.com</span>
+              <span>{COMPANY_EMAIL}</span>
             </div>
           </div>
           <div className="flex gap-4">
@@ -98,24 +114,44 @@ export default function Layout({ children }: { children: React.ReactNode }) {
 
           {/* Desktop Nav */}
           <nav className="hidden md:flex items-center gap-8">
-            {navLinks.map((link) => (
-              <a 
-                key={link.name} 
-                href={link.href}
-                className={`text-sm font-semibold transition-colors uppercase tracking-wide border-b-2 pb-0.5 ${
-                  activeSection === link.id 
-                    ? "text-primary border-accent" 
-                    : "text-foreground/80 hover:text-primary border-transparent hover:border-accent"
-                }`}
-              >
-                {link.name}
-              </a>
-            ))}
-            <ContactModal>
-              <Button className="bg-primary hover:bg-primary/90 text-white shadow-md rounded-full px-6 border border-primary hover:border-accent transition-all">
-                Get in Touch
-              </Button>
-            </ContactModal>
+            {NAV_LINKS.map((link: any) => {
+              const isActive = location === '/' && activeSection === link.id;
+              
+              // For hash links, navigate to home first then scroll to section
+              const handleHashClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
+                if (link.href.startsWith('#')) {
+                  e.preventDefault();
+                  window.location.href = '/' + link.href;
+                }
+              };
+              
+              return (
+                <a 
+                  key={link.name} 
+                  href={link.href}
+                  onClick={handleHashClick}
+                  className={`text-sm font-semibold transition-colors uppercase tracking-wide border-b-2 pb-0.5 ${
+                    isActive
+                      ? "text-primary border-accent" 
+                      : "text-foreground/80 hover:text-primary border-transparent hover:border-accent"
+                  }`}
+                >
+                  {link.name}
+                </a>
+              );
+            })}
+            <div className="flex items-center gap-3">
+              <Link href="/jobs">
+                <Button className="bg-primary hover:bg-primary/90 text-white shadow-md rounded-full px-6 border border-primary hover:border-accent transition-all cursor-pointer">
+                  {BUTTON_TEXT.iAmCandidate}
+                </Button>
+              </Link>
+              <ClientModal>
+                <Button variant="outline" className="border-primary text-primary hover:bg-primary/10 shadow-md rounded-full px-6 transition-all cursor-pointer">
+                  {BUTTON_TEXT.iAmClient}
+                </Button>
+              </ClientModal>
+            </div>
           </nav>
 
           {/* Mobile Nav */}
@@ -130,24 +166,44 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                  <img src={logoImage} alt="SRR Logo" className="h-20" />
               </div>
               <nav className="flex flex-col gap-4">
-                {navLinks.map((link) => (
-                  <a
-                    key={link.name}
-                    href={link.href}
-                    className={`text-lg font-medium transition-colors block py-3 border-b ${
-                      activeSection === link.id
-                        ? "text-primary border-accent font-bold"
-                        : "text-foreground hover:text-primary border-border/50"
-                    }`}
-                  >
-                    {link.name}
-                  </a>
-                ))}
-                <ContactModal>
-                  <Button className="w-full mt-6 bg-primary hover:bg-primary/90 text-white">
-                    Contact Us
-                  </Button>
-                </ContactModal>
+                {NAV_LINKS.map((link: any) => {
+                  const isActive = location === '/' && activeSection === link.id;
+                  
+                  // For hash links, navigate to home first then scroll to section
+                  const handleHashClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
+                    if (link.href.startsWith('#')) {
+                      e.preventDefault();
+                      window.location.href = '/' + link.href;
+                    }
+                  };
+                  
+                  return (
+                    <a
+                      key={link.name}
+                      href={link.href}
+                      onClick={handleHashClick}
+                      className={`text-lg font-medium transition-colors block py-3 border-b ${
+                        isActive
+                          ? "text-primary border-accent font-bold"
+                          : "text-foreground hover:text-primary border-border/50"
+                      }`}
+                    >
+                      {link.name}
+                    </a>
+                  );
+                })}
+                <div className="flex flex-col gap-3 mt-6">
+                  <Link href="/jobs">
+                    <Button className="w-full bg-primary hover:bg-primary/90 text-white cursor-pointer">
+                      {BUTTON_TEXT.iAmCandidate}
+                    </Button>
+                  </Link>
+                  <ClientModal>
+                    <Button variant="outline" className="w-full border-primary text-primary hover:bg-primary/10 cursor-pointer">
+                      {BUTTON_TEXT.iAmClient}
+                    </Button>
+                  </ClientModal>
+                </div>
               </nav>
             </SheetContent>
           </Sheet>
@@ -171,7 +227,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
               </div>
             </div>
             <p className="text-slate-200 text-sm leading-relaxed border-l-2 border-accent pl-4">
-              Established in 2005, SRR Consultancy is a premier global manpower solution provider, bridging the gap between talent and opportunity.
+              Established in {COMPANY_ESTABLISHED_YEAR}, {COMPANY_NAME} is a premier global manpower solution provider, bridging the gap between talent and opportunity.
             </p>
           </div>
 
@@ -181,11 +237,9 @@ export default function Layout({ children }: { children: React.ReactNode }) {
               Quick Links
             </h3>
             <ul className="space-y-3 text-sm">
-              <li><a href="#" className="hover:text-accent transition-colors flex items-center gap-2">About Us</a></li>
-              <li><a href="#" className="hover:text-accent transition-colors flex items-center gap-2">Our Services</a></li>
-              <li><a href="#" className="hover:text-accent transition-colors flex items-center gap-2">Sectors</a></li>
-              <li><a href="#" className="hover:text-accent transition-colors flex items-center gap-2">Job Seekers</a></li>
-              <li><a href="#" className="hover:text-accent transition-colors flex items-center gap-2">Contact Us</a></li>
+              {FOOTER_QUICK_LINKS.map((link) => (
+                <li key={link.name}><a href={link.href} className="hover:text-accent transition-colors flex items-center gap-2">{link.name}</a></li>
+              ))}
             </ul>
           </div>
 
@@ -195,11 +249,9 @@ export default function Layout({ children }: { children: React.ReactNode }) {
               Industries
             </h3>
             <ul className="space-y-3 text-sm">
-              <li><a href="#" className="hover:text-accent transition-colors">Construction & Engineering</a></li>
-              <li><a href="#" className="hover:text-accent transition-colors">Oil & Gas</a></li>
-              <li><a href="#" className="hover:text-accent transition-colors">Healthcare & Medical</a></li>
-              <li><a href="#" className="hover:text-accent transition-colors">Hospitality & Catering</a></li>
-              <li><a href="#" className="hover:text-accent transition-colors">Logistics & Transport</a></li>
+              {FOOTER_INDUSTRIES.map((industry) => (
+                <li key={industry}><a href="#" className="hover:text-accent transition-colors">{industry}</a></li>
+              ))}
             </ul>
           </div>
 
@@ -211,15 +263,15 @@ export default function Layout({ children }: { children: React.ReactNode }) {
             <ul className="space-y-4 text-sm">
               <li className="flex items-start gap-3">
                 <MapPin className="h-5 w-5 text-accent shrink-0 mt-0.5" />
-                <span className="text-slate-200">123 Business Avenue, Corporate Tower, Mumbai, India - 400001</span>
+                <span className="text-slate-200">{COMPANY_ADDRESS}</span>
               </li>
               <li className="flex items-center gap-3">
                 <Phone className="h-5 w-5 text-accent shrink-0" />
-                <span className="text-slate-200">+91 123 456 7890</span>
+                <span className="text-slate-200">{COMPANY_PHONE}</span>
               </li>
               <li className="flex items-center gap-3">
                 <Mail className="h-5 w-5 text-accent shrink-0" />
-                <span className="text-slate-200">info@srrconsultancy.com</span>
+                <span className="text-slate-200">{COMPANY_EMAIL}</span>
               </li>
             </ul>
           </div>
