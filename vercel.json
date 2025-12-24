@@ -11,11 +11,11 @@
       "dest": "/index.cjs"
     },
     {
-      "src": "/(.*)",
+      "src": "/public/(.*)",
       "dest": "/public/$1"
     },
     {
-      "src": "/",
+      "src": "/(.*)",
       "dest": "/public/index.html"
     }
   ]
