@@ -115,7 +115,11 @@ export default function Layout({ children }: { children: React.ReactNode }) {
           {/* Desktop Nav */}
           <nav className="hidden md:flex items-center gap-8">
             {NAV_LINKS.map((link: any) => {
-              const isActive = location === '/' && activeSection === link.id;
+              // Active for hash links: only on home page with matching section
+              // Active for /jobs: when location is /jobs
+              const isActive = link.href.startsWith('#') 
+                ? (location === '/' && activeSection === link.id)
+                : (location === link.href);
               
               // For hash links, navigate to home first then scroll to section
               const handleHashClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
@@ -167,7 +171,11 @@ export default function Layout({ children }: { children: React.ReactNode }) {
               </div>
               <nav className="flex flex-col gap-4">
                 {NAV_LINKS.map((link: any) => {
-                  const isActive = location === '/' && activeSection === link.id;
+                  // Active for hash links: only on home page with matching section
+                  // Active for /jobs: when location is /jobs
+                  const isActive = link.href.startsWith('#') 
+                    ? (location === '/' && activeSection === link.id)
+                    : (location === link.href);
                   
                   // For hash links, navigate to home first then scroll to section
                   const handleHashClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
@@ -250,7 +258,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
             </h3>
             <ul className="space-y-3 text-sm">
               {FOOTER_INDUSTRIES.map((industry) => (
-                <li key={industry}><a href="#" className="hover:text-accent transition-colors">{industry}</a></li>
+                <li key={industry}><a href={`/jobs?industry=${encodeURIComponent(industry)}`} className="hover:text-accent transition-colors">{industry}</a></li>
               ))}
             </ul>
           </div>

@@ -8,6 +8,8 @@ import { FadeIn, StaggerContainer } from "@/components/animations";
 import { motion } from "framer-motion";
 import { useLocation } from "wouter";
 import { useState } from "react";
+import { observer } from "mobx-react-lite";
+import { industryStore } from "@/stores";
 import {
   HERO_TITLE,
   HERO_DESCRIPTION,
@@ -50,17 +52,20 @@ const SECTOR_DETAILS: Record<string, { image: string; desc: string }> = {
   "Logistics": { image: logisticsImage, desc: "Logistics professionals and supply chain experts for global operations." }
 };
 
-export default function Home() {
+const Home = observer(function Home() {
   const [, navigate] = useLocation();
   const [showAllIndustries, setShowAllIndustries] = useState(false);
 
-  const displayedSectors = showAllIndustries ? SECTOR_NAMES : SECTOR_NAMES.slice(0, 4);
+  // Get industry names from MobX store, fallback to constants if no data
+  const industryNames = industryStore.industries?.map(ind => ind.Name || ind.name)?.filter(Boolean);
+
+  const displayedSectors = showAllIndustries ? industryNames : industryNames?.slice(0, 4);
 
   return (
     <Layout>
       {/* Hero Section */}
       <section className="relative h-[600px] md:h-[750px] w-full overflow-hidden">
-        <motion.div 
+        <motion.div
           initial={{ scale: 1.1 }}
           animate={{ scale: 1 }}
           transition={{ duration: 10, ease: "linear" }}
@@ -69,7 +74,7 @@ export default function Home() {
         >
           <div className="absolute inset-0 bg-gradient-to-r from-primary/95 via-primary/70 to-transparent" />
         </motion.div>
-        
+
         <div className="relative container-custom h-full flex items-center">
           <div className="max-w-3xl text-white space-y-6">
             <FadeIn delay={0.2} direction="right">
@@ -78,20 +83,20 @@ export default function Home() {
                 {HERO_BADGE_TEXT}
               </div>
             </FadeIn>
-            
+
             <FadeIn delay={0.4} direction="up">
               <h1 className="text-4xl md:text-7xl font-heading font-extrabold leading-tight">
-                {HERO_TITLE.split("<br/>")[0]} <br/>
+                {HERO_TITLE.split("<br/>")[0]} <br />
                 <span className="text-transparent bg-clip-text bg-gradient-to-r from-white to-slate-300">{HERO_TITLE.split("<br/>")[1] || ""}</span>
               </h1>
             </FadeIn>
-            
+
             <FadeIn delay={0.6} direction="up">
               <p className="text-lg md:text-xl text-slate-100 leading-relaxed max-w-xl border-l-4 border-accent pl-6">
                 {HERO_DESCRIPTION}
               </p>
             </FadeIn>
-            
+
             <FadeIn delay={0.8} direction="up">
               <div className="flex flex-col sm:flex-row gap-4 pt-6">
                 <ClientModal>
@@ -99,10 +104,10 @@ export default function Home() {
                     {BUTTON_TEXT.findTalent}
                   </Button>
                 </ClientModal>
-                <Button 
+                <Button
                   onClick={() => navigate('/jobs')}
-                  size="lg" 
-                  variant="outline" 
+                  size="lg"
+                  variant="outline"
                   className="bg-white/5 hover:bg-white/10 border-white/30 text-white text-lg px-8 h-14 rounded-full backdrop-blur-sm cursor-pointer"
                 >
                   {BUTTON_TEXT.searchJobs}
@@ -137,12 +142,12 @@ export default function Home() {
               <div className="relative group">
                 <div className="absolute -top-4 -left-4 w-24 h-24 bg-accent/20 rounded-tl-3xl -z-10 group-hover:scale-110 transition-transform duration-500" />
                 <div className="absolute -bottom-4 -right-4 w-24 h-24 bg-primary/10 rounded-br-3xl -z-10 group-hover:scale-110 transition-transform duration-500" />
-                <img 
-                  src={aboutImage} 
-                  alt="Business Meeting" 
+                <img
+                  src={aboutImage}
+                  alt="Business Meeting"
                   className="rounded-xl shadow-2xl w-full object-cover aspect-[4/3] border-4 border-white"
                 />
-                <motion.div 
+                <motion.div
                   whileHover={{ y: -5 }}
                   className="absolute bottom-8 left-8 bg-white/95 backdrop-blur p-6 rounded-lg shadow-xl max-w-xs hidden md:block border-l-4 border-primary"
                 >
@@ -151,7 +156,7 @@ export default function Home() {
                 </motion.div>
               </div>
             </FadeIn>
-            
+
             <div className="space-y-6">
               <FadeIn direction="left" delay={0.2}>
                 <div className="space-y-2">
@@ -170,15 +175,15 @@ export default function Home() {
                   {ABOUT_DESCRIPTION}
                 </p>
               </FadeIn>
-              
+
               <StaggerContainer className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-4" delay={0.4}>
                 {ABOUT_FEATURES.map((item) => (
-                  <motion.div 
+                  <motion.div
                     variants={{
                       hidden: { opacity: 0, x: 20 },
                       show: { opacity: 1, x: 0 }
                     }}
-                    key={item} 
+                    key={item}
                     className="flex items-center gap-3 bg-white p-3 rounded-lg shadow-sm border border-slate-100"
                   >
                     <CheckCircle2 className="text-secondary h-5 w-5" />
@@ -195,7 +200,7 @@ export default function Home() {
       <section id="sectors" className="section-padding bg-white relative overflow-hidden">
         {/* Decorative Background Elements */}
         <div className="absolute top-0 right-0 w-1/3 h-full bg-slate-50 skew-x-12 opacity-50 pointer-events-none" />
-        
+
         <div className="container-custom relative">
           <FadeIn direction="up">
             <div className="text-center max-w-3xl mx-auto mb-16 space-y-4">
@@ -209,55 +214,55 @@ export default function Home() {
             {displayedSectors.map((sectorName, idx) => {
               const sectorData = SECTOR_DETAILS[sectorName];
               if (!sectorData) return null;
-              
+
               return (
-              <motion.div 
-                key={idx}
-                variants={{
-                  hidden: { opacity: 0, y: 30 },
-                  show: { opacity: 1, y: 0 }
-                }}
-                className="group relative overflow-hidden rounded-xl shadow-lg border border-slate-100 hover:shadow-2xl transition-all duration-500"
-              >
-                <div className="aspect-[3/4] overflow-hidden">
-                  <img 
-                    src={sectorData.image} 
-                    alt={sectorName} 
-                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-primary/95 via-primary/50 to-transparent opacity-90 group-hover:opacity-100 transition-opacity" />
-                </div>
-                
-                <div className="absolute bottom-0 left-0 right-0 p-6 text-white translate-y-4 group-hover:translate-y-0 transition-transform duration-300">
-                  <div className="w-12 h-1 bg-accent mb-4 transform origin-left scale-x-0 group-hover:scale-x-100 transition-transform duration-500 delay-100" />
-                  <h4 className="text-xl font-bold font-heading mb-2">{sectorName}</h4>
-                  <p className="text-sm text-slate-300 opacity-0 group-hover:opacity-100 transition-opacity duration-300 delay-100 mb-4">
-                    {sectorData.desc}
-                  </p>
-                  <button 
-                    onClick={() => navigate(`/jobs?industry=${encodeURIComponent(sectorName)}`)
-                    }
-                    className="inline-flex items-center text-accent text-sm font-semibold hover:text-white transition-colors cursor-pointer"
-                  >
-                    {BUTTON_TEXT.viewPositions} <ArrowRight className="ml-1 h-3 w-3" />
-                  </button>
-                </div>
-              </motion.div>
-            );
+                <motion.div
+                  key={idx}
+                  variants={{
+                    hidden: { opacity: 0, y: 30 },
+                    show: { opacity: 1, y: 0 }
+                  }}
+                  className="group relative overflow-hidden rounded-xl shadow-lg border border-slate-100 hover:shadow-2xl transition-all duration-500"
+                >
+                  <div className="aspect-[3/4] overflow-hidden">
+                    <img
+                      src={sectorData.image}
+                      alt={sectorName}
+                      className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-primary/95 via-primary/50 to-transparent opacity-90 group-hover:opacity-100 transition-opacity" />
+                  </div>
+
+                  <div className="absolute bottom-0 left-0 right-0 p-6 text-white translate-y-4 group-hover:translate-y-0 transition-transform duration-300">
+                    <div className="w-12 h-1 bg-accent mb-4 transform origin-left scale-x-0 group-hover:scale-x-100 transition-transform duration-500 delay-100" />
+                    <h4 className="text-xl font-bold font-heading mb-2">{sectorName}</h4>
+                    <p className="text-sm text-slate-300 opacity-0 group-hover:opacity-100 transition-opacity duration-300 delay-100 mb-4">
+                      {sectorData.desc}
+                    </p>
+                    <button
+                      onClick={() => navigate(`/jobs?industry=${encodeURIComponent(sectorName)}`)
+                      }
+                      className="inline-flex items-center text-accent text-sm font-semibold hover:text-white transition-colors cursor-pointer"
+                    >
+                      {BUTTON_TEXT.viewPositions} <ArrowRight className="ml-1 h-3 w-3" />
+                    </button>
+                  </div>
+                </motion.div>
+              );
             })}
           </StaggerContainer>
-          
+
           <FadeIn direction="up" delay={0.4}>
             <div className="mt-12 text-center">
-               {!showAllIndustries && (
-                 <Button 
-                   onClick={() => setShowAllIndustries(true)}
-                   variant="outline" 
-                   className="border-primary text-primary hover:bg-primary hover:text-white rounded-full px-8 h-12 cursor-pointer"
-                 >
-                   {BUTTON_TEXT.viewAllIndustries}
-                 </Button>
-               )}
+              {!showAllIndustries && industryNames.length > 4 && (
+                <Button
+                  onClick={() => setShowAllIndustries(true)}
+                  variant="outline"
+                  className="border-primary text-primary hover:bg-primary hover:text-white rounded-full px-8 h-12 cursor-pointer"
+                >
+                  {BUTTON_TEXT.viewAllIndustries}
+                </Button>
+              )}
             </div>
           </FadeIn>
         </div>
@@ -275,10 +280,10 @@ export default function Home() {
                   {SERVICES_DESCRIPTION}
                 </p>
               </FadeIn>
-              
+
               <StaggerContainer className="space-y-4 pt-4" delay={0.2}>
                 {SERVICES.map((service, i) => (
-                  <motion.div 
+                  <motion.div
                     key={i}
                     variants={{
                       hidden: { opacity: 0, x: -20 },
@@ -286,45 +291,45 @@ export default function Home() {
                     }}
                     className="flex gap-4 p-5 bg-white rounded-xl shadow-sm border border-slate-100 hover:shadow-md hover:border-primary/20 transition-all cursor-default"
                   >
-                     <div className="bg-primary/5 p-3 rounded-full h-fit">
-                       {i === 0 && <Users className="h-6 w-6 text-primary" />}
-                       {i === 1 && <Globe2 className="h-6 w-6 text-primary" />}
-                       {i === 2 && <Briefcase className="h-6 w-6 text-primary" />}
-                     </div>
-                     <div>
-                       <h4 className="font-bold text-primary text-lg">{service.title}</h4>
-                       <p className="text-sm text-slate-500 mt-1">{service.description}</p>
-                     </div>
+                    <div className="bg-primary/5 p-3 rounded-full h-fit">
+                      {i === 0 && <Users className="h-6 w-6 text-primary" />}
+                      {i === 1 && <Globe2 className="h-6 w-6 text-primary" />}
+                      {i === 2 && <Briefcase className="h-6 w-6 text-primary" />}
+                    </div>
+                    <div>
+                      <h4 className="font-bold text-primary text-lg">{service.title}</h4>
+                      <p className="text-sm text-slate-500 mt-1">{service.description}</p>
+                    </div>
                   </motion.div>
                 ))}
               </StaggerContainer>
             </div>
-            
+
             <FadeIn direction="left" delay={0.3} className="md:col-span-2 h-full">
               <div className="relative h-full min-h-[500px] rounded-2xl overflow-hidden shadow-2xl group">
-                 <img 
-                  src={logisticsImage} 
-                  alt="Global Operations" 
-                  className="absolute inset-0 w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105" 
+                <img
+                  src={logisticsImage}
+                  alt="Global Operations"
+                  className="absolute inset-0 w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105"
                 />
-                 <div className="absolute inset-0 bg-primary/80 mix-blend-multiply" />
-                 <div className="absolute inset-0 bg-gradient-to-t from-primary via-transparent to-transparent" />
-                 
-                 <div className="absolute inset-0 flex items-center justify-center p-8 text-center">
-                   <div className="max-w-md space-y-6">
-                     <h3 className="text-3xl md:text-4xl font-heading font-bold text-white">{SERVICES_CTA_TITLE}</h3>
-                     <p className="text-slate-200 text-lg">
-                       {SERVICES_CTA_DESCRIPTION}
-                     </p>
-                     <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-                       <ContactModal>
-                         <Button size="lg" className="bg-accent hover:bg-accent/90 text-primary-foreground font-bold rounded-full px-8 mt-4 h-14 text-lg shadow-lg shadow-accent/20">
-                           {BUTTON_TEXT.requestConsultation}
-                         </Button>
-                       </ContactModal>
-                     </motion.div>
-                   </div>
-                 </div>
+                <div className="absolute inset-0 bg-primary/80 mix-blend-multiply" />
+                <div className="absolute inset-0 bg-gradient-to-t from-primary via-transparent to-transparent" />
+
+                <div className="absolute inset-0 flex items-center justify-center p-8 text-center">
+                  <div className="max-w-md space-y-6">
+                    <h3 className="text-3xl md:text-4xl font-heading font-bold text-white">{SERVICES_CTA_TITLE}</h3>
+                    <p className="text-slate-200 text-lg">
+                      {SERVICES_CTA_DESCRIPTION}
+                    </p>
+                    <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+                      <ContactModal>
+                        <Button size="lg" className="bg-accent hover:bg-accent/90 text-primary-foreground font-bold rounded-full px-8 mt-4 h-14 text-lg shadow-lg shadow-accent/20">
+                          {BUTTON_TEXT.requestConsultation}
+                        </Button>
+                      </ContactModal>
+                    </motion.div>
+                  </div>
+                </div>
               </div>
             </FadeIn>
           </div>
@@ -333,27 +338,29 @@ export default function Home() {
 
       {/* Contact CTA */}
       <section id="contact" className="py-24 bg-primary text-white relative overflow-hidden">
-         <div className="absolute inset-0 opacity-10 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-white via-transparent to-transparent" />
-         
-         <div className="container-custom text-center space-y-8 relative z-10">
-           <FadeIn direction="up">
-             <h2 className="text-3xl md:text-5xl font-heading font-bold">{CONTACT_CTA_TITLE}</h2>
-             <p className="text-xl text-slate-300 max-w-2xl mx-auto mt-4">
-               {CONTACT_CTA_DESCRIPTION}
-             </p>
-           </FadeIn>
-           
-           <FadeIn direction="up" delay={0.2}>
-             <div className="flex flex-col sm:flex-row justify-center gap-6 pt-8">
-               <ContactModal>
-                 <Button variant="secondary" size="lg" className="h-16 px-10 text-lg rounded-full font-bold text-primary bg-white hover:bg-slate-100 shadow-xl cursor-pointer">
-                   {BUTTON_TEXT.contactSupport}
-                 </Button>
-               </ContactModal>
-             </div>
-           </FadeIn>
-         </div>
+        <div className="absolute inset-0 opacity-10 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-white via-transparent to-transparent" />
+
+        <div className="container-custom text-center space-y-8 relative z-10">
+          <FadeIn direction="up">
+            <h2 className="text-3xl md:text-5xl font-heading font-bold">{CONTACT_CTA_TITLE}</h2>
+            <p className="text-xl text-slate-300 max-w-2xl mx-auto mt-4">
+              {CONTACT_CTA_DESCRIPTION}
+            </p>
+          </FadeIn>
+
+          <FadeIn direction="up" delay={0.2}>
+            <div className="flex flex-col sm:flex-row justify-center gap-6 pt-8">
+              <ContactModal>
+                <Button variant="secondary" size="lg" className="h-16 px-10 text-lg rounded-full font-bold text-primary bg-white hover:bg-slate-100 shadow-xl cursor-pointer">
+                  {BUTTON_TEXT.contactSupport}
+                </Button>
+              </ContactModal>
+            </div>
+          </FadeIn>
+        </div>
       </section>
     </Layout>
   );
-}
+});
+
+export default Home;

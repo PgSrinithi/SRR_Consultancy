@@ -6,6 +6,8 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Badge } from "@/components/ui/badge";
 import { FadeIn } from "@/components/animations";
 import { JobApplicationModal } from "@/components/job-application-modal";
+import { observer } from "mobx-react-lite";
+import { industryStore, locationStore } from "@/stores";
 import {
   Dialog,
   DialogContent,
@@ -43,7 +45,7 @@ interface Job {
   qualifications: string[];
 }
 
-export default function Jobs() {
+const Jobs = observer(function Jobs() {
   const jobs: Job[] = [
     {
       id: 1,
@@ -184,7 +186,7 @@ export default function Jobs() {
         "Knowledge of HSSE regulations",
         "Training and coaching abilities",
       ],
-    },{
+    }, {
       id: 11,
       title: "Logistics Coordinator",
       industry: "Logistics",
@@ -230,8 +232,12 @@ export default function Jobs() {
     }
   }, []);
 
-  const industries = Array.from(new Set(jobs.map((job) => job.industry)));
-  const locations = Array.from(new Set(jobs.map((job) => job.location)));
+  // Use MobX store industries if available, otherwise extract from jobs
+  const industries = industryStore.industries.map((ind: any) => ind.Name || ind.name).filter(Boolean)
+    ;
+
+  // Use MobX store locations if available, otherwise extract from jobs
+  const locations = locationStore.locations.map((loc: any) => loc.Name || loc.name).filter(Boolean);
 
   const toggleIndustry = (industry: string) => {
     setSelectedIndustries((prev) =>
@@ -334,55 +340,55 @@ export default function Jobs() {
             {/* Selected Filters Badges */}
             {(selectedIndustries.length > 0 ||
               selectedLocations.length > 0) && (
-              <FadeIn>
-                <div className="flex flex-wrap items-center gap-3">
-                  <span className="text-sm font-medium text-gray-600">
-                    {JOBS_FILTER_LABELS.activeFilters}
-                  </span>
-                  {selectedIndustries.map((industry) => (
-                    <Badge
-                      key={`industry-${industry}`}
-                      variant="secondary"
-                      className="gap-2 pl-3"
-                    >
-                      {industry}
-                      <button
-                        onClick={() => removeIndustryFilter(industry)}
-                        className="hover:text-red-600 cursor-pointer"
+                <FadeIn>
+                  <div className="flex flex-wrap items-center gap-3">
+                    <span className="text-sm font-medium text-gray-600">
+                      {JOBS_FILTER_LABELS.activeFilters}
+                    </span>
+                    {selectedIndustries.map((industry) => (
+                      <Badge
+                        key={`industry-${industry}`}
+                        variant="secondary"
+                        className="gap-2 pl-3"
                       >
-                        <X size={14} />
-                      </button>
-                    </Badge>
-                  ))}
-                  {selectedLocations.map((location) => (
-                    <Badge
-                      key={`location-${location}`}
-                      variant="secondary"
-                      className="gap-2 pl-3"
-                    >
-                      {location}
-                      <button
-                        onClick={() => removeLocationFilter(location)}
-                        className="hover:text-red-600 cursor-pointer"
+                        {industry}
+                        <button
+                          onClick={() => removeIndustryFilter(industry)}
+                          className="hover:text-red-600 cursor-pointer"
+                        >
+                          <X size={14} />
+                        </button>
+                      </Badge>
+                    ))}
+                    {selectedLocations.map((location) => (
+                      <Badge
+                        key={`location-${location}`}
+                        variant="secondary"
+                        className="gap-2 pl-3"
                       >
-                        <X size={14} />
-                      </button>
-                    </Badge>
-                  ))}
-                  {(selectedIndustries.length > 0 ||
-                    selectedLocations.length > 0) && (
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={clearAllFilters}
-                      className="text-xs cursor-pointer"
-                    >
-                      {BUTTON_TEXT.clearAll}
-                    </Button>
-                  )}
-                </div>
-              </FadeIn>
-            )}
+                        {location}
+                        <button
+                          onClick={() => removeLocationFilter(location)}
+                          className="hover:text-red-600 cursor-pointer"
+                        >
+                          <X size={14} />
+                        </button>
+                      </Badge>
+                    ))}
+                    {(selectedIndustries.length > 0 ||
+                      selectedLocations.length > 0) && (
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={clearAllFilters}
+                          className="text-xs cursor-pointer"
+                        >
+                          {BUTTON_TEXT.clearAll}
+                        </Button>
+                      )}
+                  </div>
+                </FadeIn>
+              )}
 
             {/* Main Content - Filters and Jobs */}
             <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
@@ -499,11 +505,10 @@ export default function Jobs() {
                                 currentPage > 1 &&
                                 handlePageChange(currentPage - 1)
                               }
-                              className={`cursor-pointer ${
-                                currentPage === 1
-                                  ? "pointer-events-none opacity-50"
-                                  : ""
-                              }`}
+                              className={`cursor-pointer ${currentPage === 1
+                                ? "pointer-events-none opacity-50"
+                                : ""
+                                }`}
                             />
                           </PaginationItem>
 
@@ -533,11 +538,10 @@ export default function Jobs() {
                                 currentPage < totalPages &&
                                 handlePageChange(currentPage + 1)
                               }
-                              className={`cursor-pointer ${
-                                currentPage === totalPages
-                                  ? "pointer-events-none opacity-50"
-                                  : ""
-                              }`}
+                              className={`cursor-pointer ${currentPage === totalPages
+                                ? "pointer-events-none opacity-50"
+                                : ""
+                                }`}
                             />
                           </PaginationItem>
                         </PaginationContent>
@@ -659,4 +663,6 @@ export default function Jobs() {
       </section>
     </Layout>
   );
-}
+});
+
+export default Jobs;
