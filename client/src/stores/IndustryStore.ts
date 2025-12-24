@@ -1,4 +1,4 @@
-import { makeAutoObservable } from 'mobx';
+import { makeAutoObservable, runInAction } from "mobx";
 
 export interface Industry {
   id: string;
@@ -12,25 +12,40 @@ class IndustryStore {
   error: Error | null = null;
 
   constructor() {
-    makeAutoObservable(this);
+    makeAutoObservable(this, {}, { autoBind: true });
   }
 
   async fetchIndustries() {
     this.loading = true;
     this.error = null;
+
     try {
-      const response = await fetch('/api/industry');
+      const response = await fetch("/api/industry", {
+        cache: "no-store", 
+        headers: {
+          "Cache-Control": "no-cache",
+        },
+      });
+
       if (!response.ok) {
-        throw new Error('Failed to fetch industries');
+        throw new Error(`Failed to fetch industries (${response.status})`);
       }
+
       const data = await response.json();
-      this.industries = data;
-      console.log('Fetched Industries:', this.industries);
+
+      runInAction(() => {
+        this.industries = data;
+        this.loading = false;
+      });
+
+      console.log("Fetched Industries:", data);
     } catch (err) {
-      this.error = err instanceof Error ? err : new Error('Failed to load industries');
-      this.industries = [];
-    } finally {
-      this.loading = false;
+      runInAction(() => {
+        this.error =
+          err instanceof Error ? err : new Error("Failed to load industries");
+        this.industries = [];
+        this.loading = false;
+      });
     }
   }
 
