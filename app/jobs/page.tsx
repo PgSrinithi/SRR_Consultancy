@@ -47,22 +47,22 @@ interface Job {
   qualifications: string[];
 }
 
-const JobsContent = observer(function JobsContent() {
-  const jobs: Job[] = [
-    {
-      id: 1,
-      title: "Senior Civil Engineer",
-      industry: "Construction",
-      location: "Lagos",
-      description: "We are seeking an experienced Senior Civil Engineer to lead infrastructure projects and manage a team of engineers. The ideal candidate will have expertise in project planning, design, and supervision of large-scale construction projects.",
-      qualifications: [
-        "Bachelor's degree in Civil Engineering or related field",
-        "Minimum 10 years of experience in construction",
-        "PEng certification preferred",
-        "Strong leadership and communication skills",
-        "Experience with CAD software",
-      ],
-    },
+// Move jobs data outside component to avoid re-creation on every render
+const JOBS_DATA: Job[] = [
+  {
+    id: 1,
+    title: "Senior Civil Engineer",
+    industry: "Construction",
+    location: "Lagos",
+    description: "We are seeking an experienced Senior Civil Engineer to lead infrastructure projects and manage a team of engineers. The ideal candidate will have expertise in project planning, design, and supervision of large-scale construction projects.",
+    qualifications: [
+      "Bachelor's degree in Civil Engineering or related field",
+      "Minimum 10 years of experience in construction",
+      "PEng certification preferred",
+      "Strong leadership and communication skills",
+      "Experience with CAD software",
+    ],
+  },
     {
       id: 2,
       title: "Certified Technician (Oil & Gas)",
@@ -216,8 +216,9 @@ const JobsContent = observer(function JobsContent() {
         "Training and coaching abilities",
       ],
     },
-  ];
+];
 
+const JobsContent = observer(function JobsContent() {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedIndustries, setSelectedIndustries] = useState<string[]>([]);
   const [selectedLocations, setSelectedLocations] = useState<string[]>([]);
@@ -273,7 +274,7 @@ const JobsContent = observer(function JobsContent() {
   };
 
   const filteredJobs = useMemo(() => {
-    return jobs.filter((job) => {
+    return JOBS_DATA.filter((job) => {
       const matchesSearch = job.title
         .toLowerCase()
         .includes(searchQuery.toLowerCase());
@@ -286,7 +287,7 @@ const JobsContent = observer(function JobsContent() {
 
       return matchesSearch && matchesIndustry && matchesLocation;
     });
-  }, [searchQuery, selectedIndustries, selectedLocations, jobs]);
+  }, [searchQuery, selectedIndustries, selectedLocations]);
 
   const totalPages = Math.ceil(filteredJobs.length / ITEMS_PER_PAGE);
   const paginatedJobs = filteredJobs.slice(
