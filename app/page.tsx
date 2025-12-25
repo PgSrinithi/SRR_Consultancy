@@ -7,9 +7,8 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { ArrowRight, CheckCircle2, Users, Building2, Globe2, Briefcase } from "lucide-react";
 import { FadeIn, StaggerContainer } from "@/components/animations";
-import { motion } from "framer-motion";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { observer } from "mobx-react-lite";
 import { industryStore } from "@/stores";
 import {
@@ -59,24 +58,28 @@ const Home = observer(function Home() {
   const router = useRouter();
   const [showAllIndustries, setShowAllIndustries] = useState(false);
 
-  // Get industry names from MobX store, fallback to constants if no data
-  const industryNames = industryStore.industries?.map(ind => ind.Name || ind.name)?.filter(Boolean);
+  // Fetch industries on mount
+  useEffect(() => {
+    if (industryStore.industries.length === 0 && !industryStore.loading) {
+      industryStore.fetchIndustries();
+    }
+  }, []);
 
-  const displayedSectors = showAllIndustries ? industryNames : industryNames?.slice(0, 4);
+  // Extract industry names from store
+  const industryNames = industryStore.industries?.map(ind => ind.name || ind.Name)?.filter(Boolean) || [];
+  const displayedSectors = showAllIndustries ? industryNames : industryNames.slice(0, 4);
+
 
   return (
     <Layout>
       {/* Hero Section */}
       <section className="relative h-[600px] md:h-[750px] w-full overflow-hidden">
-        <motion.div
-          initial={{ scale: 1.1 }}
-          animate={{ scale: 1 }}
-          transition={{ duration: 10, ease: "linear" }}
-          className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+        <div
+          className="absolute inset-0 bg-cover bg-center bg-no-repeat animate-[scale_10s_linear_infinite]"
           style={{ backgroundImage: `url(${heroImage.src})` }}
         >
           <div className="absolute inset-0 bg-gradient-to-r from-primary/95 via-primary/70 to-transparent" />
-        </motion.div>
+        </div>
 
         <div className="relative container-custom h-full flex items-center">
           <div className="max-w-3xl text-white space-y-6">
@@ -152,13 +155,12 @@ const Home = observer(function Home() {
                   height={600}
                   className="rounded-xl shadow-2xl w-full object-cover aspect-[4/3] border-4 border-white"
                 />
-                <motion.div
-                  whileHover={{ y: -5 }}
-                  className="absolute bottom-8 left-8 bg-white/95 backdrop-blur p-6 rounded-lg shadow-xl max-w-xs hidden md:block border-l-4 border-primary"
+                <div
+                  className="absolute bottom-8 left-8 bg-white/95 backdrop-blur p-6 rounded-lg shadow-xl max-w-xs hidden md:block border-l-4 border-primary hover:-translate-y-1 transition-transform"
                 >
                   <p className="text-primary font-bold text-xl mb-1">&ldquo;{ABOUT_CEO_QUOTE}&rdquo;</p>
                   <p className="text-sm text-slate-500">- CEO Message</p>
-                </motion.div>
+                </div>
               </div>
             </FadeIn>
 
@@ -183,17 +185,13 @@ const Home = observer(function Home() {
 
               <StaggerContainer className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-4" delay={0.4}>
                 {ABOUT_FEATURES.map((item) => (
-                  <motion.div
-                    variants={{
-                      hidden: { opacity: 0, x: 20 },
-                      show: { opacity: 1, x: 0 }
-                    }}
+                  <div
                     key={item}
-                    className="flex items-center gap-3 bg-white p-3 rounded-lg shadow-sm border border-slate-100"
+                    className="flex items-center gap-3 bg-white p-3 rounded-lg shadow-sm border border-slate-100 animate-fadeIn"
                   >
                     <CheckCircle2 className="text-secondary h-5 w-5" />
                     <span className="font-medium text-slate-700">{item}</span>
-                  </motion.div>
+                  </div>
                 ))}
               </StaggerContainer>
             </div>
@@ -221,13 +219,10 @@ const Home = observer(function Home() {
               if (!sectorData) return null;
 
               return (
-                <motion.div
+                <div
                   key={idx}
-                  variants={{
-                    hidden: { opacity: 0, y: 30 },
-                    show: { opacity: 1, y: 0 }
-                  }}
-                  className="group relative overflow-hidden rounded-xl shadow-lg border border-slate-100 hover:shadow-2xl transition-all duration-500"
+                  className="group relative overflow-hidden rounded-xl shadow-lg border border-slate-100 hover:shadow-2xl transition-all duration-500 opacity-100 animate-fadeInUp"
+                  style={{ animationDelay: `${idx * 100}ms` }}
                 >
                   <div className="aspect-[3/4] overflow-hidden">
                     <Image
@@ -254,14 +249,14 @@ const Home = observer(function Home() {
                       {BUTTON_TEXT.viewPositions} <ArrowRight className="ml-1 h-3 w-3" />
                     </button>
                   </div>
-                </motion.div>
+                </div>
               );
             })}
           </StaggerContainer>
 
           <FadeIn direction="up" delay={0.4}>
             <div className="mt-12 text-center">
-              {!showAllIndustries && industryNames.length > 4 && (
+              {!showAllIndustries && industryNames?.length > 4 && (
                 <Button
                   onClick={() => setShowAllIndustries(true)}
                   variant="outline"
@@ -290,13 +285,10 @@ const Home = observer(function Home() {
 
               <StaggerContainer className="space-y-4 pt-4" delay={0.2}>
                 {SERVICES.map((service, i) => (
-                  <motion.div
+                  <div
                     key={i}
-                    variants={{
-                      hidden: { opacity: 0, x: -20 },
-                      show: { opacity: 1, x: 0 }
-                    }}
-                    className="flex gap-4 p-5 bg-white rounded-xl shadow-sm border border-slate-100 hover:shadow-md hover:border-primary/20 transition-all cursor-default"
+                    className="flex gap-4 p-5 bg-white rounded-xl shadow-sm border border-slate-100 hover:shadow-md hover:border-primary/20 transition-all cursor-default animate-fadeIn"
+                    style={{ animationDelay: `${i * 100}ms` }}
                   >
                     <div className="bg-primary/5 p-3 rounded-full h-fit">
                       {i === 0 && <Users className="h-6 w-6 text-primary" />}
@@ -307,7 +299,7 @@ const Home = observer(function Home() {
                       <h4 className="font-bold text-primary text-lg">{service.title}</h4>
                       <p className="text-sm text-slate-500 mt-1">{service.description}</p>
                     </div>
-                  </motion.div>
+                  </div>
                 ))}
               </StaggerContainer>
             </div>
@@ -330,13 +322,13 @@ const Home = observer(function Home() {
                     <p className="text-slate-200 text-lg">
                       {SERVICES_CTA_DESCRIPTION}
                     </p>
-                    <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+                    <div className="hover:scale-105 active:scale-95 transition-transform">
                       <ContactModal>
                         <Button size="lg" className="bg-accent hover:bg-accent/90 text-primary-foreground font-bold rounded-full px-8 mt-4 h-14 text-lg shadow-lg shadow-accent/20">
                           {BUTTON_TEXT.requestConsultation}
                         </Button>
                       </ContactModal>
-                    </motion.div>
+                    </div>
                   </div>
                 </div>
               </div>
