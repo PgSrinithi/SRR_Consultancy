@@ -1,7 +1,6 @@
 {
   "name": "srr-connects",
   "version": "1.0.0",
-  "type": "module",
   "license": "MIT",
   "scripts": {
     "dev": "next dev",
