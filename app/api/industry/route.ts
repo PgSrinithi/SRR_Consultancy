@@ -1,8 +1,13 @@
 import { NextResponse } from 'next/server';
-import { base } from '@/lib/airtable';
+import Airtable from 'airtable';
 
 export async function GET() {
   try {
+    // Configure Airtable dynamically in the route handler
+    const base = new Airtable({ 
+      apiKey: process.env.AIRTABLE_API_KEY || '' 
+    }).base(process.env.AIRTABLE_BASE_ID || '');
+
     const records = await base('Industry')
       .select()
       .all();

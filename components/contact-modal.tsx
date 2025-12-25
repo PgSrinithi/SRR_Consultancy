@@ -65,7 +65,7 @@ export function ContactModal({ children }: { children: React.ReactNode }) {
         <DialogHeader>
           <DialogTitle className="text-2xl font-heading font-bold text-primary">Get in Touch</DialogTitle>
           <DialogDescription>
-            Fill out the form below and we'll get back to you within 24 hours.
+            Fill out the form below and we&apos;ll get back to you within 24 hours.
           </DialogDescription>
         </DialogHeader>
 

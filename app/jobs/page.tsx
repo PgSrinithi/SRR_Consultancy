@@ -24,7 +24,7 @@ import {
   PaginationPrevious,
   PaginationNext,
 } from "@/components/ui/pagination";
-import { useState, useMemo, useEffect } from "react";
+import { useState, useMemo, useEffect, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import { X } from "lucide-react";
 import {
@@ -47,7 +47,7 @@ interface Job {
   qualifications: string[];
 }
 
-const Jobs = observer(function Jobs() {
+const JobsContent = observer(function JobsContent() {
   const jobs: Job[] = [
     {
       id: 1,
@@ -286,7 +286,7 @@ const Jobs = observer(function Jobs() {
 
       return matchesSearch && matchesIndustry && matchesLocation;
     });
-  }, [searchQuery, selectedIndustries, selectedLocations]);
+  }, [searchQuery, selectedIndustries, selectedLocations, jobs]);
 
   const totalPages = Math.ceil(filteredJobs.length / ITEMS_PER_PAGE);
   const paginatedJobs = filteredJobs.slice(
@@ -668,4 +668,18 @@ const Jobs = observer(function Jobs() {
   );
 });
 
-export default Jobs;
+export default function Jobs() {
+  return (
+    <Suspense fallback={
+      <Layout>
+        <section className="section-padding">
+          <div className="container-custom text-center">
+            <p>Loading jobs...</p>
+          </div>
+        </section>
+      </Layout>
+    }>
+      <JobsContent />
+    </Suspense>
+  );
+}

@@ -156,7 +156,7 @@ const Home = observer(function Home() {
                   whileHover={{ y: -5 }}
                   className="absolute bottom-8 left-8 bg-white/95 backdrop-blur p-6 rounded-lg shadow-xl max-w-xs hidden md:block border-l-4 border-primary"
                 >
-                  <p className="text-primary font-bold text-xl mb-1">"{ABOUT_CEO_QUOTE}"</p>
+                  <p className="text-primary font-bold text-xl mb-1">&ldquo;{ABOUT_CEO_QUOTE}&rdquo;</p>
                   <p className="text-sm text-slate-500">- CEO Message</p>
                 </motion.div>
               </div>
@@ -230,9 +230,11 @@ const Home = observer(function Home() {
                   className="group relative overflow-hidden rounded-xl shadow-lg border border-slate-100 hover:shadow-2xl transition-all duration-500"
                 >
                   <div className="aspect-[3/4] overflow-hidden">
-                    <img
+                    <Image
                       src={sectorData.image}
                       alt={sectorName}
+                      width={400}
+                      height={533}
                       className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-primary/95 via-primary/50 to-transparent opacity-90 group-hover:opacity-100 transition-opacity" />
@@ -312,9 +314,11 @@ const Home = observer(function Home() {
 
             <FadeIn direction="left" delay={0.3} className="md:col-span-2 h-full">
               <div className="relative h-full min-h-[500px] rounded-2xl overflow-hidden shadow-2xl group">
-                <img
+                <Image
                   src={logisticsImage}
                   alt="Global Operations"
+                  width={800}
+                  height={600}
                   className="absolute inset-0 w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105"
                 />
                 <div className="absolute inset-0 bg-primary/80 mix-blend-multiply" />
