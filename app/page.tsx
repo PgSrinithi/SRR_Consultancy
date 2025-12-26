@@ -5,7 +5,14 @@ import { ClientModal } from "@/components/client-modal";
 import Layout from "@/components/layout";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { ArrowRight, CheckCircle2, Users, Building2, Globe2, Briefcase } from "lucide-react";
+import {
+  ArrowRight,
+  CheckCircle2,
+  Users,
+  Building2,
+  Globe2,
+  Briefcase,
+} from "lucide-react";
 import { FadeIn, StaggerContainer } from "@/components/animations";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -46,14 +53,6 @@ import hospitalityImage from "@/../public/assets/stock_images/chef_in_commercial
 import healthcareImage from "@/../public/assets/stock_images/doctor_nurse_hospita_566fd048.jpg";
 import logisticsImage from "@/../public/assets/stock_images/global_logistics_wor_3a6eb8f3.jpg";
 
-const SECTOR_DETAILS: Record<string, { image: string; desc: string }> = {
-  "Construction": { image: constructionImage.src, desc: "Skilled civil engineers, masons, and laborers for large-scale projects." },
-  "Oil & Gas": { image: oilImage.src, desc: "Certified technicians and safety experts for onshore and offshore operations." },
-  "Healthcare": { image: healthcareImage.src, desc: "Qualified doctors, nurses, and medical support staff for hospitals." },
-  "Hospitality": { image: hospitalityImage.src, desc: "Experienced chefs, waitstaff, and hotel management professionals." },
-  "Logistics": { image: logisticsImage.src, desc: "Logistics professionals and supply chain experts for global operations." }
-};
-
 const Home = observer(function Home() {
   const router = useRouter();
   const [showAllIndustries, setShowAllIndustries] = useState(false);
@@ -66,9 +65,11 @@ const Home = observer(function Home() {
   }, []);
 
   // Extract industry names from store
-  const industryNames = industryStore.industries?.map(ind => ind.name || ind.Name)?.filter(Boolean) || [];
-  const displayedSectors = showAllIndustries ? industryNames : industryNames.slice(0, 4);
-
+  const industryNames =
+    industryStore.industries?.map((ind) => ind)?.filter(Boolean) || [];
+  const displayedSectors = showAllIndustries
+    ? industryNames
+    : industryNames.slice(0, 4);
 
   return (
     <Layout>
@@ -93,7 +94,9 @@ const Home = observer(function Home() {
             <FadeIn delay={0.4} direction="up">
               <h1 className="text-4xl md:text-7xl font-heading font-extrabold leading-tight">
                 {HERO_TITLE.split("<br/>")[0]} <br />
-                <span className="text-transparent bg-clip-text bg-gradient-to-r from-white to-slate-300">{HERO_TITLE.split("<br/>")[1] || ""}</span>
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-white to-slate-300">
+                  {HERO_TITLE.split("<br/>")[1] || ""}
+                </span>
               </h1>
             </FadeIn>
 
@@ -106,12 +109,15 @@ const Home = observer(function Home() {
             <FadeIn delay={0.8} direction="up">
               <div className="flex flex-col sm:flex-row gap-4 pt-6">
                 <ClientModal>
-                  <Button size="lg" className="bg-accent hover:bg-accent/90 text-primary-foreground font-bold text-lg px-8 h-14 rounded-full shadow-lg hover:shadow-accent/25 transition-all cursor-pointer">
+                  <Button
+                    size="lg"
+                    className="bg-accent hover:bg-accent/90 text-primary-foreground font-bold text-lg px-8 h-14 rounded-full shadow-lg hover:shadow-accent/25 transition-all cursor-pointer"
+                  >
                     {BUTTON_TEXT.findTalent}
                   </Button>
                 </ClientModal>
                 <Button
-                  onClick={() => router.push('/jobs')}
+                  onClick={() => router.push("/jobs")}
                   size="lg"
                   variant="outline"
                   className="bg-white/5 hover:bg-white/10 border-white/30 text-white text-lg px-8 h-14 rounded-full backdrop-blur-sm cursor-pointer"
@@ -130,9 +136,16 @@ const Home = observer(function Home() {
           <FadeIn direction="up" delay={0.2}>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-8 bg-white/95 backdrop-blur-xl p-10 rounded-2xl shadow-2xl border border-slate-100">
               {STATS.map((stat, i) => (
-                <div key={i} className="text-center space-y-2 border-r last:border-0 border-slate-100">
-                  <div className="text-4xl md:text-5xl font-heading font-bold text-primary">{stat.number}</div>
-                  <div className="text-sm md:text-base text-slate-500 font-medium uppercase tracking-wide">{stat.label}</div>
+                <div
+                  key={i}
+                  className="text-center space-y-2 border-r last:border-0 border-slate-100"
+                >
+                  <div className="text-4xl md:text-5xl font-heading font-bold text-primary">
+                    {stat.number}
+                  </div>
+                  <div className="text-sm md:text-base text-slate-500 font-medium uppercase tracking-wide">
+                    {stat.label}
+                  </div>
                 </div>
               ))}
             </div>
@@ -155,10 +168,10 @@ const Home = observer(function Home() {
                   height={600}
                   className="rounded-xl shadow-2xl w-full object-cover aspect-[4/3] border-4 border-white"
                 />
-                <div
-                  className="absolute bottom-8 left-8 bg-white/95 backdrop-blur p-6 rounded-lg shadow-xl max-w-xs hidden md:block border-l-4 border-primary hover:-translate-y-1 transition-transform"
-                >
-                  <p className="text-primary font-bold text-xl mb-1">&ldquo;{ABOUT_CEO_QUOTE}&rdquo;</p>
+                <div className="absolute bottom-8 left-8 bg-white/95 backdrop-blur p-6 rounded-lg shadow-xl max-w-xs hidden md:block border-l-4 border-primary hover:-translate-y-1 transition-transform">
+                  <p className="text-primary font-bold text-xl mb-1">
+                    &ldquo;{ABOUT_CEO_QUOTE}&rdquo;
+                  </p>
                   <p className="text-sm text-slate-500">- CEO Message</p>
                 </div>
               </div>
@@ -183,7 +196,10 @@ const Home = observer(function Home() {
                 </p>
               </FadeIn>
 
-              <StaggerContainer className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-4" delay={0.4}>
+              <StaggerContainer
+                className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-4"
+                delay={0.4}
+              >
                 {ABOUT_FEATURES.map((item) => (
                   <div
                     key={item}
@@ -200,58 +216,66 @@ const Home = observer(function Home() {
       </section>
 
       {/* Sectors Section */}
-      <section id="sectors" className="section-padding bg-white relative overflow-hidden">
+      <section
+        id="sectors"
+        className="section-padding bg-white relative overflow-hidden"
+      >
         {/* Decorative Background Elements */}
         <div className="absolute top-0 right-0 w-1/3 h-full bg-slate-50 skew-x-12 opacity-50 pointer-events-none" />
 
         <div className="container-custom relative">
           <FadeIn direction="up">
             <div className="text-center max-w-3xl mx-auto mb-16 space-y-4">
-              <h2 className="text-accent font-semibold tracking-wide uppercase text-sm">{SECTORS_BADGE}</h2>
-              <h3 className="text-3xl md:text-4xl font-heading font-bold text-primary">{SECTORS_TITLE}</h3>
+              <h2 className="text-accent font-semibold tracking-wide uppercase text-sm">
+                {SECTORS_BADGE}
+              </h2>
+              <h3 className="text-3xl md:text-4xl font-heading font-bold text-primary">
+                {SECTORS_TITLE}
+              </h3>
               <p className="text-slate-600 text-lg">{SECTORS_DESCRIPTION}</p>
             </div>
           </FadeIn>
-
           <StaggerContainer className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {displayedSectors.map((sectorName, idx) => {
-              const sectorData = SECTOR_DETAILS[sectorName];
-              if (!sectorData) return null;
+            {displayedSectors.map((sector, idx) => (
+              <div
+                key={idx}
+                className="group relative rounded-xl border border-slate-100 bg-white shadow-md hover:shadow-xl transition-all duration-300 p-6 flex flex-col justify-between animate-fadeInUp"
+                style={{ animationDelay: `${idx * 100}ms` }}
+              >
+                {/* Top Accent */}
+                <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-accent to-primary rounded-t-xl" />
 
-              return (
-                <div
-                  key={idx}
-                  className="group relative overflow-hidden rounded-xl shadow-lg border border-slate-100 hover:shadow-2xl transition-all duration-500 opacity-100 animate-fadeInUp"
-                  style={{ animationDelay: `${idx * 100}ms` }}
-                >
-                  <div className="aspect-[3/4] overflow-hidden">
-                    <Image
-                      src={sectorData.image}
-                      alt={sectorName}
-                      width={400}
-                      height={533}
-                      className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-primary/95 via-primary/50 to-transparent opacity-90 group-hover:opacity-100 transition-opacity" />
-                  </div>
-
-                  <div className="absolute bottom-0 left-0 right-0 p-6 text-white translate-y-4 group-hover:translate-y-0 transition-transform duration-300">
-                    <div className="w-12 h-1 bg-accent mb-4 transform origin-left scale-x-0 group-hover:scale-x-100 transition-transform duration-500 delay-100" />
-                    <h4 className="text-xl font-bold font-heading mb-2">{sectorName}</h4>
-                    <p className="text-sm text-slate-300 opacity-0 group-hover:opacity-100 transition-opacity duration-300 delay-100 mb-4">
-                      {sectorData.desc}
-                    </p>
-                    <button
-                      onClick={() => router.push(`/jobs?industry=${encodeURIComponent(sectorName)}`)
-                      }
-                      className="inline-flex items-center text-accent text-sm font-semibold hover:text-white transition-colors cursor-pointer"
-                    >
-                      {BUTTON_TEXT.viewPositions} <ArrowRight className="ml-1 h-3 w-3" />
-                    </button>
-                  </div>
+                {/* Icon / Initial */}
+                <div className="w-12 h-12 rounded-full bg-primary/10 text-primary flex items-center justify-center text-xl font-bold mb-4 group-hover:scale-110 transition-transform">
+                  {sector?.name?.charAt(0)}
                 </div>
-              );
-            })}
+
+                {/* Content */}
+                <div className="space-y-2 flex-1">
+                  <h4 className="text-xl font-heading font-bold text-primary">
+                    {sector?.name}
+                  </h4>
+
+                  <p className="text-sm text-slate-600 line-clamp-3">
+                    {sector?.description ||
+                      "Explore opportunities in this industry."}
+                  </p>
+                </div>
+
+                {/* CTA */}
+                <button
+                  onClick={() =>
+                    router.push(
+                      `/jobs?industry=${encodeURIComponent(sector?.name)}`
+                    )
+                  }
+                  className="inline-flex items-center gap-1 mt-6 text-sm font-semibold text-accent hover:text-primary transition-colors"
+                >
+                  {BUTTON_TEXT.viewPositions}
+                  <ArrowRight className="h-4 w-4" />
+                </button>
+              </div>
+            ))}
           </StaggerContainer>
 
           <FadeIn direction="up" delay={0.4}>
@@ -276,11 +300,13 @@ const Home = observer(function Home() {
           <div className="grid md:grid-cols-3 gap-8">
             <div className="md:col-span-1 space-y-6">
               <FadeIn direction="right">
-                <h2 className="text-accent font-semibold tracking-wide uppercase text-sm">{SERVICES_BADGE}</h2>
-                <h3 className="text-3xl md:text-4xl font-heading font-bold text-primary">{SERVICES_TITLE}</h3>
-                <p className="text-slate-600 text-lg">
-                  {SERVICES_DESCRIPTION}
-                </p>
+                <h2 className="text-accent font-semibold tracking-wide uppercase text-sm">
+                  {SERVICES_BADGE}
+                </h2>
+                <h3 className="text-3xl md:text-4xl font-heading font-bold text-primary">
+                  {SERVICES_TITLE}
+                </h3>
+                <p className="text-slate-600 text-lg">{SERVICES_DESCRIPTION}</p>
               </FadeIn>
 
               <StaggerContainer className="space-y-4 pt-4" delay={0.2}>
@@ -293,18 +319,28 @@ const Home = observer(function Home() {
                     <div className="bg-primary/5 p-3 rounded-full h-fit">
                       {i === 0 && <Users className="h-6 w-6 text-primary" />}
                       {i === 1 && <Globe2 className="h-6 w-6 text-primary" />}
-                      {i === 2 && <Briefcase className="h-6 w-6 text-primary" />}
+                      {i === 2 && (
+                        <Briefcase className="h-6 w-6 text-primary" />
+                      )}
                     </div>
                     <div>
-                      <h4 className="font-bold text-primary text-lg">{service.title}</h4>
-                      <p className="text-sm text-slate-500 mt-1">{service.description}</p>
+                      <h4 className="font-bold text-primary text-lg">
+                        {service.title}
+                      </h4>
+                      <p className="text-sm text-slate-500 mt-1">
+                        {service.description}
+                      </p>
                     </div>
                   </div>
                 ))}
               </StaggerContainer>
             </div>
 
-            <FadeIn direction="left" delay={0.3} className="md:col-span-2 h-full">
+            <FadeIn
+              direction="left"
+              delay={0.3}
+              className="md:col-span-2 h-full"
+            >
               <div className="relative h-full min-h-[500px] rounded-2xl overflow-hidden shadow-2xl group">
                 <Image
                   src={logisticsImage}
@@ -318,13 +354,18 @@ const Home = observer(function Home() {
 
                 <div className="absolute inset-0 flex items-center justify-center p-8 text-center">
                   <div className="max-w-md space-y-6">
-                    <h3 className="text-3xl md:text-4xl font-heading font-bold text-white">{SERVICES_CTA_TITLE}</h3>
+                    <h3 className="text-3xl md:text-4xl font-heading font-bold text-white">
+                      {SERVICES_CTA_TITLE}
+                    </h3>
                     <p className="text-slate-200 text-lg">
                       {SERVICES_CTA_DESCRIPTION}
                     </p>
                     <div className="hover:scale-105 active:scale-95 transition-transform">
                       <ContactModal>
-                        <Button size="lg" className="bg-accent hover:bg-accent/90 text-primary-foreground font-bold rounded-full px-8 mt-4 h-14 text-lg shadow-lg shadow-accent/20">
+                        <Button
+                          size="lg"
+                          className="bg-accent hover:bg-accent/90 text-primary-foreground font-bold rounded-full px-8 mt-4 h-14 text-lg shadow-lg shadow-accent/20"
+                        >
                           {BUTTON_TEXT.requestConsultation}
                         </Button>
                       </ContactModal>
@@ -338,12 +379,17 @@ const Home = observer(function Home() {
       </section>
 
       {/* Contact CTA */}
-      <section id="contact" className="py-24 bg-primary text-white relative overflow-hidden">
+      <section
+        id="contact"
+        className="py-24 bg-primary text-white relative overflow-hidden"
+      >
         <div className="absolute inset-0 opacity-10 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-white via-transparent to-transparent" />
 
         <div className="container-custom text-center space-y-8 relative z-10">
           <FadeIn direction="up">
-            <h2 className="text-3xl md:text-5xl font-heading font-bold">{CONTACT_CTA_TITLE}</h2>
+            <h2 className="text-3xl md:text-5xl font-heading font-bold">
+              {CONTACT_CTA_TITLE}
+            </h2>
             <p className="text-xl text-slate-300 max-w-2xl mx-auto mt-4">
               {CONTACT_CTA_DESCRIPTION}
             </p>
@@ -352,7 +398,11 @@ const Home = observer(function Home() {
           <FadeIn direction="up" delay={0.2}>
             <div className="flex flex-col sm:flex-row justify-center gap-6 pt-8">
               <ContactModal>
-                <Button variant="secondary" size="lg" className="h-16 px-10 text-lg rounded-full font-bold text-primary bg-white hover:bg-slate-100 shadow-xl cursor-pointer">
+                <Button
+                  variant="secondary"
+                  size="lg"
+                  className="h-16 px-10 text-lg rounded-full font-bold text-primary bg-white hover:bg-slate-100 shadow-xl cursor-pointer"
+                >
                   {BUTTON_TEXT.contactSupport}
                 </Button>
               </ContactModal>
