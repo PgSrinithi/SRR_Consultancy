@@ -2,6 +2,7 @@ import { FadeIn } from "@/components/animations";
 import { JobApplicationModal } from "@/components/job-application-modal";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import { Checkbox } from "@/components/ui/checkbox";
 import {
   Pagination,
   PaginationContent,
@@ -16,7 +17,6 @@ import {
   JOBS_PAGE_TEXT,
 } from "@/lib/constants";
 import { jobPostingStore } from "@/stores";
-import { Checkbox } from "@radix-ui/react-checkbox";
 
 interface JobFiltersProps {
   isMounted: boolean;
