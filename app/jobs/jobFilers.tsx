@@ -16,7 +16,12 @@ import {
   JOBS_FILTER_LABELS,
   JOBS_PAGE_TEXT,
 } from "@/lib/constants";
-import { jobPostingStore } from "@/stores";
+import {
+  industryStore,
+  jobPostingStore,
+  jobRoleStore,
+  locationStore,
+} from "@/stores";
 
 interface JobFiltersProps {
   isMounted: boolean;
@@ -59,6 +64,9 @@ export function JobFilters(props: JobFiltersProps) {
     handleViewJob,
   } = props;
 
+  const areAllSelected = (allIds: string[], selected: string[]) =>
+    allIds.length > 0 && allIds.every((id) => selected.includes(id));
+
   const toggleIndustry = (industryId: string) => {
     setSelectedIndustries((prev: string[]) =>
       prev.includes(industryId)
@@ -86,6 +94,12 @@ export function JobFilters(props: JobFiltersProps) {
     setCurrentPage(1);
   };
 
+  const FilterLoader = () => (
+    <div className="flex justify-center py-6">
+      <div className="loader ease-linear rounded-full border-4 border-t-4 border-gray-200 h-8 w-8"></div>
+    </div>
+  );
+
   return (
     <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
       {/* Sidebar Filters */}
@@ -96,24 +110,48 @@ export function JobFilters(props: JobFiltersProps) {
             <h3 className="font-semibold text-gray-900 mb-4">
               {JOBS_FILTER_LABELS.industry}
             </h3>
-            <div className="space-y-3">
-              {industries.map((industry) => (
-                <div key={industry.id} className="flex items-center">
+
+            {industryStore.loading || !isMounted ? (
+              <FilterLoader />
+            ) : (
+              <div className="space-y-3">
+                {/* Select All */}
+                <div className="flex items-center border-b pb-2 mb-2">
                   <Checkbox
-                    id={`industry-${industry.id}`}
-                    checked={selectedIndustries.includes(industry.id)}
-                    onCheckedChange={() => toggleIndustry(industry.id)}
-                    className="cursor-pointer"
+                    checked={areAllSelected(
+                      industryStore.industries.map((i) => i.id),
+                      selectedIndustries
+                    )}
+                    onCheckedChange={(checked) => {
+                      setSelectedIndustries(
+                        checked ? industryStore.industries.map((i) => i.id) : []
+                      );
+                      setCurrentPage(1);
+                    }}
                   />
-                  <label
-                    htmlFor={`industry-${industry.id}`}
-                    className="ml-2 text-sm text-gray-700 cursor-pointer hover:text-gray-900"
-                  >
-                    {industry.name}
+                  <label className="ml-2 text-sm font-medium text-gray-800 cursor-pointer">
+                    Select All
                   </label>
                 </div>
-              ))}
-            </div>
+
+                {/* Items */}
+                {industryStore.industries.map((industry) => (
+                  <div key={industry.id} className="flex items-center">
+                    <Checkbox
+                      id={`industry-${industry.id}`}
+                      checked={selectedIndustries.includes(industry.id)}
+                      onCheckedChange={() => toggleIndustry(industry.id)}
+                    />
+                    <label
+                      htmlFor={`industry-${industry.id}`}
+                      className="ml-2 text-sm text-gray-700 cursor-pointer"
+                    >
+                      {industry.name}
+                    </label>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
 
           {/* Location Filter */}
@@ -121,24 +159,46 @@ export function JobFilters(props: JobFiltersProps) {
             <h3 className="font-semibold text-gray-900 mb-4">
               {JOBS_FILTER_LABELS.location}
             </h3>
-            <div className="space-y-3">
-              {locations.map((location) => (
-                <div key={location.id} className="flex items-center">
+
+            {locationStore.loading || !isMounted ? (
+              <FilterLoader />
+            ) : (
+              <div className="space-y-3">
+                <div className="flex items-center border-b pb-2 mb-2">
                   <Checkbox
-                    id={`location-${location.id}`}
-                    checked={selectedLocations.includes(location.id)}
-                    onCheckedChange={() => toggleLocation(location.id)}
-                    className="cursor-pointer"
+                    checked={areAllSelected(
+                      locations.map((l) => l.id),
+                      selectedLocations
+                    )}
+                    onCheckedChange={(checked) => {
+                      setSelectedLocations(
+                        checked ? locations.map((l) => l.id) : []
+                      );
+                      setCurrentPage(1);
+                    }}
                   />
-                  <label
-                    htmlFor={`location-${location.id}`}
-                    className="ml-2 text-sm text-gray-700 cursor-pointer hover:text-gray-900"
-                  >
-                    {location.name}
+                  <label className="ml-2 text-sm font-medium text-gray-800">
+                    Select All
                   </label>
                 </div>
-              ))}
-            </div>
+
+                {locations.map((location) => (
+                  <div key={location.id} className="flex items-center">
+                    <Checkbox
+                      id={`location-${location.id}`}
+                      checked={selectedLocations.includes(location.id)}
+                      onCheckedChange={() => toggleLocation(location.id)}
+                    />
+                    <label
+                      htmlFor={`location-${location.id}`}
+                      className="ml-2 text-sm text-gray-700"
+                    >
+                      {location.name}
+                    </label>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
 
           {/* Job Role Filter */}
@@ -146,24 +206,46 @@ export function JobFilters(props: JobFiltersProps) {
             <h3 className="font-semibold text-gray-900 mb-4">
               {JOBS_FILTER_LABELS.jobRole}
             </h3>
-            <div className="space-y-3">
-              {jobRoles.map((jobRole) => (
-                <div key={jobRole.id} className="flex items-center">
+
+            {jobRoleStore.loading || !isMounted ? (
+              <FilterLoader />
+            ) : (
+              <div className="space-y-3">
+                <div className="flex items-center border-b pb-2 mb-2">
                   <Checkbox
-                    id={`jobRole-${jobRole.id}`}
-                    checked={selectedJobRoles.includes(jobRole.id)}
-                    onCheckedChange={() => toggleJobRole(jobRole.id)}
-                    className="cursor-pointer"
+                    checked={areAllSelected(
+                      jobRoles.map((j) => j.id),
+                      selectedJobRoles
+                    )}
+                    onCheckedChange={(checked) => {
+                      setSelectedJobRoles(
+                        checked ? jobRoles.map((j) => j.id) : []
+                      );
+                      setCurrentPage(1);
+                    }}
                   />
-                  <label
-                    htmlFor={`jobRole-${jobRole.id}`}
-                    className="ml-2 text-sm text-gray-700 cursor-pointer hover:text-gray-900"
-                  >
-                    {jobRole.name}
+                  <label className="ml-2 text-sm font-medium text-gray-800">
+                    Select All
                   </label>
                 </div>
-              ))}
-            </div>
+
+                {jobRoles.map((jobRole) => (
+                  <div key={jobRole.id} className="flex items-center">
+                    <Checkbox
+                      id={`jobRole-${jobRole.id}`}
+                      checked={selectedJobRoles.includes(jobRole.id)}
+                      onCheckedChange={() => toggleJobRole(jobRole.id)}
+                    />
+                    <label
+                      htmlFor={`jobRole-${jobRole.id}`}
+                      className="ml-2 text-sm text-gray-700"
+                    >
+                      {jobRole.name}
+                    </label>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
         </div>
       </FadeIn>

@@ -84,20 +84,11 @@ export const CONTACT_CTA_DESCRIPTION =
 
 // Footer - Quick Links
 export const FOOTER_QUICK_LINKS = [
-  { name: "About Us", href: "#" },
-  { name: "Our Services", href: "#" },
-  { name: "Sectors", href: "#" },
-  { name: "Job Seekers", href: "#" },
-  { name: "Contact Us", href: "#" },
-];
-
-// Footer - Industries
-export const FOOTER_INDUSTRIES = [
-  "Construction & Engineering",
-  "Oil & Gas",
-  "Healthcare & Medical",
-  "Hospitality & Catering",
-  "Logistics & Transport",
+  { name: "About Us", href: "#about" },
+  { name: "Our Services", href: "#services" },
+  { name: "Sectors", href: "#sectors" },
+  { name: "Job Seekers", href: "#jobs" },
+  { name: "Contact Us", href: "#contact" },
 ];
 
 // Footer - Social Links

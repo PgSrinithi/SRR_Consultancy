@@ -2,12 +2,9 @@
 
 import Layout from "@/components/layout";
 import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { Checkbox } from "@/components/ui/checkbox";
 import { Badge } from "@/components/ui/badge";
 import { FadeIn } from "@/components/animations";
-import { JobApplicationModal } from "@/components/job-application-modal";
 import { observer } from "mobx-react-lite";
 import {
   industryStore,
@@ -15,20 +12,6 @@ import {
   jobRoleStore,
   locationStore,
 } from "@/stores";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
-import {
-  Pagination,
-  PaginationContent,
-  PaginationItem,
-  PaginationLink,
-  PaginationPrevious,
-  PaginationNext,
-} from "@/components/ui/pagination";
 import { useState, useMemo, useEffect, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import { X } from "lucide-react";
@@ -38,11 +21,11 @@ import {
   JOBS_SEARCH_PLACEHOLDER,
   JOBS_SEARCH_LABEL,
   JOBS_FILTER_LABELS,
-  JOBS_PAGE_TEXT,
   ITEMS_PER_PAGE,
   BUTTON_TEXT,
 } from "@/lib/constants";
 import { JobFilters } from "./jobFilers";
+import { JobDetailsModal } from "./jobDetailsModal";
 
 interface JobPosting {
   id: string;
@@ -69,6 +52,13 @@ const JobsContent = observer(function JobsContent() {
   const [selectedJob, setSelectedJob] = useState<EnrichedJob | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
+
+  const isLoading =
+    !isMounted ||
+    industryStore.loading ||
+    locationStore.loading ||
+    jobRoleStore.loading ||
+    jobPostingStore.loading;
 
   useEffect(() => {
     setIsMounted(true);
@@ -254,6 +244,7 @@ const JobsContent = observer(function JobsContent() {
                     setCurrentPage(1);
                   }}
                   className="max-w-md"
+                  disabled={isLoading}
                 />
               </div>
             </FadeIn>
@@ -326,8 +317,8 @@ const JobsContent = observer(function JobsContent() {
 
             {/* Main Content - Filters and Jobs */}
             <JobFilters
-             isMounted={isMounted}
-              industries={industries} 
+              isMounted={isMounted}
+              industries={industries}
               locations={locations}
               jobRoles={jobRoles}
               selectedIndustries={selectedIndustries}
@@ -346,87 +337,11 @@ const JobsContent = observer(function JobsContent() {
             />
 
             {/* Job Details Modal */}
-            <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
-              <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
-                <DialogHeader>
-                  <DialogTitle className="text-2xl">
-                    {selectedJob?.jobRoleName}
-                  </DialogTitle>
-                </DialogHeader>
-
-                {selectedJob && (
-                  <div className="space-y-6">
-                    {/* Job Info */}
-                    <div className="grid grid-cols-2 gap-4 pb-6 border-b">
-                      <div>
-                        <p className="text-sm font-medium text-gray-600">
-                          {JOBS_PAGE_TEXT.industry}
-                        </p>
-                        <p className="text-lg font-semibold">
-                          {selectedJob.industryName}
-                        </p>
-                      </div>
-                      <div>
-                        <p className="text-sm font-medium text-gray-600">
-                          {JOBS_PAGE_TEXT.location}
-                        </p>
-                        <p className="text-lg font-semibold">
-                          {selectedJob.locationName}
-                        </p>
-                      </div>
-                      <div>
-                        <p className="text-sm font-medium text-gray-600">
-                          Available Openings
-                        </p>
-                        <p className="text-lg font-semibold text-primary">
-                          {selectedJob.Openings}
-                        </p>
-                      </div>
-                    </div>
-
-                    {/* Requirements */}
-                    {selectedJob.Requirement && (
-                      <div>
-                        <h3 className="text-lg font-semibold mb-3">
-                          {JOBS_PAGE_TEXT.requiredQualifications}
-                        </h3>
-                        <div className="text-gray-700 leading-relaxed whitespace-pre-wrap">
-                          {selectedJob.Requirement}
-                        </div>
-                      </div>
-                    )}
-
-                    {!selectedJob.Requirement && (
-                      <div>
-                        <h3 className="text-lg font-semibold mb-3">
-                          {JOBS_PAGE_TEXT.requiredQualifications}
-                        </h3>
-                        <p className="text-gray-500 italic">
-                          No specific requirements listed. Please contact us for
-                          more details.
-                        </p>
-                      </div>
-                    )}
-
-                    {/* Apply Button */}
-                    <div className="pt-6 border-t flex gap-3">
-                      <JobApplicationModal jobTitle={selectedJob.jobRoleName}>
-                        <Button className="bg-primary hover:bg-primary/90 text-white cursor-pointer flex-1">
-                          {JOBS_PAGE_TEXT.applyNowButton}
-                        </Button>
-                      </JobApplicationModal>
-                      <Button
-                        variant="outline"
-                        onClick={() => setIsModalOpen(false)}
-                        className="cursor-pointer"
-                      >
-                        {JOBS_PAGE_TEXT.closeButton}
-                      </Button>
-                    </div>
-                  </div>
-                )}
-              </DialogContent>
-            </Dialog>
+            <JobDetailsModal
+              open={isModalOpen}
+              onOpenChange={setIsModalOpen}
+              job={selectedJob}
+            />
           </div>
         </div>
       </section>

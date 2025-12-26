@@ -6,7 +6,6 @@ import { Menu, X, Phone, Mail, Facebook, Twitter, Linkedin, Instagram, MapPin } 
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-import { ContactModal } from "@/components/contact-modal";
 import { ClientModal } from "@/components/client-modal";
 import Image from "next/image";
 import logoImage from "@/../public/assets/Logo.jpeg";
@@ -16,11 +15,11 @@ import {
   COMPANY_EMAIL,
   COMPANY_ADDRESS,
   FOOTER_QUICK_LINKS,
-  FOOTER_INDUSTRIES,
   BUTTON_TEXT,
   COMPANY_NAME,
   COMPANY_ESTABLISHED_YEAR,
 } from "@/lib/constants";
+import { industryStore } from "@/stores";
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -263,8 +262,8 @@ export default function Layout({ children }: { children: React.ReactNode }) {
               Industries
             </h3>
             <ul className="space-y-3 text-sm">
-              {FOOTER_INDUSTRIES.map((industry) => (
-                <li key={industry}><a href={`/jobs?industry=${encodeURIComponent(industry)}`} className="hover:text-accent transition-colors">{industry}</a></li>
+              {industryStore?.industries?.map((industry) => (
+                <li key={industry?.id}><a href={`/jobs?industry=${encodeURIComponent(industry?.name)}`} className="hover:text-accent transition-colors">{industry?.name}</a></li>
               ))}
             </ul>
           </div>
