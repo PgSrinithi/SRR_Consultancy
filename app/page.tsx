@@ -47,10 +47,6 @@ import Image from "next/image";
 // Asset Imports
 import heroImage from "@/../public/assets/stock_images/professional_busines_09c23622.jpg";
 import aboutImage from "@/../public/assets/stock_images/business_handshake_d_10e5b8ea.jpg";
-import constructionImage from "@/../public/assets/stock_images/construction_workers_2f98eaf1.jpg";
-import oilImage from "@/../public/assets/stock_images/oil_and_gas_refinery_9b2e6c0b.jpg";
-import hospitalityImage from "@/../public/assets/stock_images/chef_in_commercial_k_f8b13607.jpg";
-import healthcareImage from "@/../public/assets/stock_images/doctor_nurse_hospita_566fd048.jpg";
 import logisticsImage from "@/../public/assets/stock_images/global_logistics_wor_3a6eb8f3.jpg";
 
 const Home = observer(function Home() {

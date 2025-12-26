@@ -9,7 +9,7 @@ import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { ContactModal } from "@/components/contact-modal";
 import { ClientModal } from "@/components/client-modal";
 import Image from "next/image";
-import logoImage from "@/../public/assets/WhatsApp_Image_2025-12-07_at_11.30.59_AM_1765087278704.jpeg";
+import logoImage from "@/../public/assets/Logo.jpeg";
 import {
   NAV_LINKS,
   COMPANY_PHONE,
