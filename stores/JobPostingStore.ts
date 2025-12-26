@@ -1,13 +1,8 @@
+import { JobPosting } from "@/interface/jobs";
 import { makeAutoObservable, runInAction } from "mobx";
 
-export interface Industry {
-  id: string;
-  name: string;
-  [key: string]: any;
-}
-
-class IndustryStore {
-  industries: Industry[] = [];
+class JobPostingStore {
+  jobPostings: JobPosting[] = [];
   loading = false;
   error: Error | null = null;
 
@@ -15,44 +10,43 @@ class IndustryStore {
     makeAutoObservable(this, {}, { autoBind: true });
   }
 
-  async fetchIndustries() {
+  async fetchJobPostings() {
     this.loading = true;
     this.error = null;
 
     try {
-      const response = await fetch("/api/industry", {
-        cache: "no-store", 
+      const response = await fetch("/api/jobPostings", {
+        cache: "no-store",
         headers: {
           "Cache-Control": "no-cache",
         },
       });
 
       if (!response.ok) {
-        throw new Error(`Failed to fetch industries (${response.status})`);
+        throw new Error(`Failed to fetch job postings (${response.status})`);
       }
 
       const data = await response.json();
 
       runInAction(() => {
-        this.industries = data;
+        this.jobPostings = data;
         this.loading = false;
       });
-
     } catch (err) {
       runInAction(() => {
         this.error =
-          err instanceof Error ? err : new Error("Failed to load industries");
-        this.industries = [];
+          err instanceof Error ? err : new Error("Failed to load job postings");
+        this.jobPostings = [];
         this.loading = false;
       });
     }
   }
 
   reset() {
-    this.industries = [];
+    this.jobPostings = [];
     this.loading = false;
     this.error = null;
   }
 }
 
-export const industryStore = new IndustryStore();
+export const jobPostingStore = new JobPostingStore();

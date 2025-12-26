@@ -5,7 +5,12 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { Toaster } from "@/components/ui/toaster";
 import { queryClient } from "@/lib/queryClient";
 import { observer } from "mobx-react-lite";
-import { industryStore, locationStore } from "@/stores";
+import {
+  industryStore,
+  locationStore,
+  jobRoleStore,
+  jobPostingStore,
+} from "@/stores";
 import { useEffect } from "react";
 
 const StoreInitializer = observer(function StoreInitializer() {
@@ -15,6 +20,12 @@ const StoreInitializer = observer(function StoreInitializer() {
     }
     if (locationStore.locations.length === 0) {
       locationStore.fetchLocations();
+    }
+    if (jobRoleStore.jobRoles.length === 0) {
+      jobRoleStore.fetchJobRoles();
+    }
+    if (jobPostingStore.jobPostings.length === 0) {
+      jobPostingStore.fetchJobPostings();
     }
   }, []);
 

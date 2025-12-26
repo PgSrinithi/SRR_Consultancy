@@ -9,7 +9,12 @@ import { Badge } from "@/components/ui/badge";
 import { FadeIn } from "@/components/animations";
 import { JobApplicationModal } from "@/components/job-application-modal";
 import { observer } from "mobx-react-lite";
-import { industryStore, locationStore } from "@/stores";
+import {
+  industryStore,
+  jobPostingStore,
+  jobRoleStore,
+  locationStore,
+} from "@/stores";
 import {
   Dialog,
   DialogContent,
@@ -38,256 +43,182 @@ import {
   BUTTON_TEXT,
 } from "@/lib/constants";
 
-interface Job {
-  id: number;
-  title: string;
-  industry: string;
-  location: string;
-  description: string;
-  qualifications: string[];
+interface JobPosting {
+  id: string;
+  jobId: string;
+  industryId: string;
+  locationId: string;
+  Requirement: string | null;
+  Openings: number;
 }
 
-// Move jobs data outside component to avoid re-creation on every render
-const JOBS_DATA: Job[] = [
-  {
-    id: 1,
-    title: "Senior Civil Engineer",
-    industry: "Construction",
-    location: "Lagos",
-    description: "We are seeking an experienced Senior Civil Engineer to lead infrastructure projects and manage a team of engineers. The ideal candidate will have expertise in project planning, design, and supervision of large-scale construction projects.",
-    qualifications: [
-      "Bachelor's degree in Civil Engineering or related field",
-      "Minimum 10 years of experience in construction",
-      "PEng certification preferred",
-      "Strong leadership and communication skills",
-      "Experience with CAD software",
-    ],
-  },
-    {
-      id: 2,
-      title: "Certified Technician (Oil & Gas)",
-      industry: "Oil & Gas",
-      location: "Port Harcourt",
-      description: "Join our oil and gas operations team as a Certified Technician. You will be responsible for maintaining equipment, conducting safety inspections, and ensuring compliance with industry standards.",
-      qualifications: [
-        "Relevant certification from recognized institution",
-        "Minimum 5 years in oil & gas sector",
-        "Knowledge of safety protocols",
-        "Technical maintenance expertise",
-        "Valid driving license",
-      ],
-    },
-    {
-      id: 3,
-      title: "Medical Doctor",
-      industry: "Healthcare",
-      location: "Abuja",
-      description: "We are looking for a dedicated Medical Doctor to join our healthcare facility. You will provide patient care, conduct medical examinations, and maintain patient records.",
-      qualifications: [
-        "Medical degree from accredited institution",
-        "Current medical license",
-        "NYSC completion",
-        "Excellent communication skills",
-        "Compassionate patient care approach",
-      ],
-    },
-    {
-      id: 4,
-      title: "Executive Chef",
-      industry: "Hospitality",
-      location: "Lagos",
-      description: "Lead our culinary team as an Executive Chef. Oversee menu development, kitchen operations, and ensure the highest standards of food quality and presentation.",
-      qualifications: [
-        "Culinary degree or equivalent experience",
-        "Minimum 8 years in food preparation",
-        "Menu planning expertise",
-        "Food safety and hygiene knowledge",
-        "Leadership experience",
-      ],
-    },
-    {
-      id: 5,
-      title: "Project Manager",
-      industry: "Construction",
-      location: "Abuja",
-      description: "Manage multiple construction projects from inception to completion. Coordinate with contractors, monitor budgets, and ensure projects are delivered on time.",
-      qualifications: [
-        "Project Management certification (PMP/PRINCE2)",
-        "Minimum 7 years project management experience",
-        "Construction industry knowledge",
-        "Strong organizational skills",
-        "Budget management expertise",
-      ],
-    },
-    {
-      id: 6,
-      title: "Registered Nurse",
-      industry: "Healthcare",
-      location: "Lagos",
-      description: "Provide compassionate patient care in our healthcare facility. Administer medications, assist doctors, and maintain accurate patient records.",
-      qualifications: [
-        "Nursing degree from accredited school",
-        "Valid nursing registration",
-        "NYSC completion",
-        "Strong patient care skills",
-        "Ability to work shifts",
-      ],
-    },
-    {
-      id: 7,
-      title: "Logistics Coordinator",
-      industry: "Logistics",
-      location: "Port Harcourt",
-      description: "Coordinate logistics operations, manage supply chains, and ensure efficient delivery of goods. Work with vendors and track shipments.",
-      qualifications: [
-        "Diploma in Logistics or related field",
-        "Minimum 4 years logistics experience",
-        "Supply chain knowledge",
-        "Excellent organizational skills",
-        "Proficiency in logistics software",
-      ],
-    },
-    {
-      id: 8,
-      title: "Safety Engineer",
-      industry: "Oil & Gas",
-      location: "Lagos",
-      description: "Develop and implement safety programs in our oil and gas operations. Conduct safety audits, train staff, and ensure HSSE compliance.",
-      qualifications: [
-        "Engineering degree with safety specialization",
-        "NEBOSH certification",
-        "Minimum 6 years safety experience",
-        "Knowledge of HSSE regulations",
-        "Training and coaching abilities",
-      ],
-    },
-    {
-      id: 9,
-      title: "Logistics Coordinator",
-      industry: "Logistics",
-      location: "Port Harcourt",
-      description: "Coordinate logistics operations, manage supply chains, and ensure efficient delivery of goods. Work with vendors and track shipments.",
-      qualifications: [
-        "Diploma in Logistics or related field",
-        "Minimum 4 years logistics experience",
-        "Supply chain knowledge",
-        "Excellent organizational skills",
-        "Proficiency in logistics software",
-      ],
-    },
-    {
-      id: 10,
-      title: "Safety Engineer",
-      industry: "Oil & Gas",
-      location: "Lagos",
-      description: "Develop and implement safety programs in our oil and gas operations. Conduct safety audits, train staff, and ensure HSSE compliance.",
-      qualifications: [
-        "Engineering degree with safety specialization",
-        "NEBOSH certification",
-        "Minimum 6 years safety experience",
-        "Knowledge of HSSE regulations",
-        "Training and coaching abilities",
-      ],
-    }, {
-      id: 11,
-      title: "Logistics Coordinator",
-      industry: "Logistics",
-      location: "Port Harcourt",
-      description: "Coordinate logistics operations, manage supply chains, and ensure efficient delivery of goods. Work with vendors and track shipments.",
-      qualifications: [
-        "Diploma in Logistics or related field",
-        "Minimum 4 years logistics experience",
-        "Supply chain knowledge",
-        "Excellent organizational skills",
-        "Proficiency in logistics software",
-      ],
-    },
-    {
-      id: 12,
-      title: "Safety Engineer",
-      industry: "Oil & Gas",
-      location: "Lagos",
-      description: "Develop and implement safety programs in our oil and gas operations. Conduct safety audits, train staff, and ensure HSSE compliance.",
-      qualifications: [
-        "Engineering degree with safety specialization",
-        "NEBOSH certification",
-        "Minimum 6 years safety experience",
-        "Knowledge of HSSE regulations",
-        "Training and coaching abilities",
-      ],
-    },
-];
+interface EnrichedJob extends JobPosting {
+  jobRoleName: string;
+  industryName: string;
+  locationName: string;
+}
 
 const JobsContent = observer(function JobsContent() {
+  const searchParams = useSearchParams();
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedIndustries, setSelectedIndustries] = useState<string[]>([]);
   const [selectedLocations, setSelectedLocations] = useState<string[]>([]);
+  const [selectedJobRoles, setSelectedJobRoles] = useState<string[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
-  const [selectedJob, setSelectedJob] = useState<Job | null>(null);
+  const [selectedJob, setSelectedJob] = useState<EnrichedJob | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isMounted, setIsMounted] = useState(false);
 
-  const searchParams = useSearchParams();
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
 
   // Get industry from query parameter on component mount
   useEffect(() => {
     const industryParam = searchParams.get("industry");
     if (industryParam) {
-      setSelectedIndustries([industryParam]);
+      // Find the industry ID by name
+      const industry = industryStore.industries.find(
+        (ind: any) => ind.name === industryParam
+      );
+      if (industry) {
+        setSelectedIndustries([industry.id]);
+      }
     }
   }, [searchParams]);
 
-  // Use MobX store industries if available, otherwise extract from jobs
-  const industries = industryStore.industries.map((ind: any) => ind.Name || ind.name).filter(Boolean)
-    ;
+  // Get master data arrays
+  const industries = useMemo(
+    () =>
+      industryStore.industries
+        .map((ind: any) => ({
+          id: ind.id,
+          name: ind.name,
+        }))
+        .filter((ind) => ind.name),
+    [industryStore.industries]
+  );
 
-  // Use MobX store locations if available, otherwise extract from jobs
-  const locations = locationStore.locations.map((loc: any) => loc.Name || loc.name).filter(Boolean);
+  const locations = useMemo(
+    () =>
+      locationStore.locations
+        .map((loc: any) => ({
+          id: loc.id,
+          name: loc.name,
+        }))
+        .filter((loc) => loc.name),
+    [locationStore.locations]
+  );
 
-  const toggleIndustry = (industry: string) => {
+  const jobRoles = useMemo(
+    () =>
+      jobRoleStore.jobRoles
+        .map((role: any) => ({
+          id: role.id,
+          name: role.jobName,
+        }))
+        .filter((role) => role.name),
+    [jobRoleStore.jobRoles]
+  );
+
+  // Enrich job postings with master data
+  const enrichedJobs = useMemo(() => {
+    return (jobPostingStore?.jobPostings || []).map((job: JobPosting) => {
+      const industry = industries.find((ind) => ind.id === job.industryId);
+      const location = locations.find((loc) => loc.id === job.locationId);
+      const jobRole = jobRoles.find((role) => role.id === job.jobId);
+
+      return {
+        ...job,
+        jobRoleName: jobRole?.name || "Unknown Role",
+        industryName: industry?.name || "Unknown Industry",
+        locationName: location?.name || "Unknown Location",
+      };
+    });
+  }, [jobPostingStore?.jobPostings, industries, locations, jobRoles]);
+
+  const toggleIndustry = (industryId: string) => {
     setSelectedIndustries((prev) =>
-      prev.includes(industry)
-        ? prev.filter((i) => i !== industry)
-        : [...prev, industry]
+      prev.includes(industryId)
+        ? prev.filter((i) => i !== industryId)
+        : [...prev, industryId]
     );
+    setCurrentPage(1);
   };
 
-  const toggleLocation = (location: string) => {
+  const toggleLocation = (locationId: string) => {
     setSelectedLocations((prev) =>
-      prev.includes(location)
-        ? prev.filter((l) => l !== location)
-        : [...prev, location]
+      prev.includes(locationId)
+        ? prev.filter((l) => l !== locationId)
+        : [...prev, locationId]
     );
+    setCurrentPage(1);
   };
 
-  const removeIndustryFilter = (industry: string) => {
-    setSelectedIndustries((prev) => prev.filter((i) => i !== industry));
+  const toggleJobRole = (jobRoleId: string) => {
+    setSelectedJobRoles((prev) =>
+      prev.includes(jobRoleId)
+        ? prev.filter((j) => j !== jobRoleId)
+        : [...prev, jobRoleId]
+    );
+    setCurrentPage(1);
   };
 
-  const removeLocationFilter = (location: string) => {
-    setSelectedLocations((prev) => prev.filter((l) => l !== location));
+  const removeIndustryFilter = (industryId: string) => {
+    setSelectedIndustries((prev) => prev.filter((i) => i !== industryId));
+  };
+
+  const removeLocationFilter = (locationId: string) => {
+    setSelectedLocations((prev) => prev.filter((l) => l !== locationId));
+  };
+
+  const removeJobRoleFilter = (jobRoleId: string) => {
+    setSelectedJobRoles((prev) => prev.filter((j) => j !== jobRoleId));
   };
 
   const clearAllFilters = () => {
     setSearchQuery("");
     setSelectedIndustries([]);
     setSelectedLocations([]);
+    setSelectedJobRoles([]);
+    setCurrentPage(1);
   };
 
+  // Filter jobs based on selected filters and search query
   const filteredJobs = useMemo(() => {
-    return JOBS_DATA.filter((job) => {
-      const matchesSearch = job.title
-        .toLowerCase()
-        .includes(searchQuery.toLowerCase());
+    return enrichedJobs.filter((job) => {
+      // Search query filter - searches in job role name
+      const matchesSearch =
+        searchQuery === "" ||
+        job.jobRoleName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        job.industryName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        job.locationName.toLowerCase().includes(searchQuery.toLowerCase());
+
+      // Industry filter
       const matchesIndustry =
         selectedIndustries.length === 0 ||
-        selectedIndustries.includes(job.industry);
+        selectedIndustries.includes(job.industryId);
+
+      // Location filter
       const matchesLocation =
         selectedLocations.length === 0 ||
-        selectedLocations.includes(job.location);
+        selectedLocations.includes(job.locationId);
 
-      return matchesSearch && matchesIndustry && matchesLocation;
+      // Job Role filter
+      const matchesJobRole =
+        selectedJobRoles.length === 0 || selectedJobRoles.includes(job.jobId);
+
+      return (
+        matchesSearch && matchesIndustry && matchesLocation && matchesJobRole
+      );
     });
-  }, [searchQuery, selectedIndustries, selectedLocations]);
+  }, [
+    enrichedJobs,
+    searchQuery,
+    selectedIndustries,
+    selectedLocations,
+    selectedJobRoles,
+  ]);
 
   const totalPages = Math.ceil(filteredJobs.length / ITEMS_PER_PAGE);
   const paginatedJobs = filteredJobs.slice(
@@ -295,7 +226,7 @@ const JobsContent = observer(function JobsContent() {
     currentPage * ITEMS_PER_PAGE
   );
 
-  const handleViewJob = (job: Job) => {
+  const handleViewJob = (job: EnrichedJob) => {
     setSelectedJob(job);
     setIsModalOpen(true);
   };
@@ -305,6 +236,14 @@ const JobsContent = observer(function JobsContent() {
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
+  // Get display names for selected filters
+  const getIndustryName = (id: string) =>
+    industries.find((ind) => ind.id === id)?.name || "";
+  const getLocationName = (id: string) =>
+    locations.find((loc) => loc.id === id)?.name || "";
+  const getJobRoleName = (id: string) =>
+    jobRoles.find((role) => role.id === id)?.name || "";
+
   return (
     <Layout>
       {/* Hero Section */}
@@ -312,7 +251,9 @@ const JobsContent = observer(function JobsContent() {
         <div className="container-custom">
           <FadeIn>
             <div className="space-y-4">
-              <h1 className="text-4xl md:text-5xl font-bold">{JOBS_HERO_TITLE}</h1>
+              <h1 className="text-4xl md:text-5xl font-bold">
+                {JOBS_HERO_TITLE}
+              </h1>
               <p className="text-lg text-white/90 max-w-2xl">
                 {JOBS_HERO_DESCRIPTION}
               </p>
@@ -335,7 +276,10 @@ const JobsContent = observer(function JobsContent() {
                   type="text"
                   placeholder={JOBS_SEARCH_PLACEHOLDER}
                   value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
+                  onChange={(e) => {
+                    setSearchQuery(e.target.value);
+                    setCurrentPage(1);
+                  }}
                   className="max-w-md"
                 />
               </div>
@@ -343,56 +287,69 @@ const JobsContent = observer(function JobsContent() {
 
             {/* Selected Filters Badges */}
             {(selectedIndustries.length > 0 ||
-              selectedLocations.length > 0) && (
-                <FadeIn>
-                  <div className="flex flex-wrap items-center gap-3">
-                    <span className="text-sm font-medium text-gray-600">
-                      {JOBS_FILTER_LABELS.activeFilters}
-                    </span>
-                    {selectedIndustries.map((industry) => (
-                      <Badge
-                        key={`industry-${industry}`}
-                        variant="secondary"
-                        className="gap-2 pl-3"
+              selectedLocations.length > 0 ||
+              selectedJobRoles.length > 0) && (
+              <FadeIn>
+                <div className="flex flex-wrap items-center gap-3">
+                  <span className="text-sm font-medium text-gray-600">
+                    {JOBS_FILTER_LABELS.activeFilters}
+                  </span>
+                  {selectedIndustries.map((industryId) => (
+                    <Badge
+                      key={`industry-${industryId}`}
+                      variant="secondary"
+                      className="gap-2 pl-3"
+                    >
+                      {getIndustryName(industryId)}
+                      <button
+                        onClick={() => removeIndustryFilter(industryId)}
+                        className="hover:text-red-600 cursor-pointer"
                       >
-                        {industry}
-                        <button
-                          onClick={() => removeIndustryFilter(industry)}
-                          className="hover:text-red-600 cursor-pointer"
-                        >
-                          <X size={14} />
-                        </button>
-                      </Badge>
-                    ))}
-                    {selectedLocations.map((location) => (
-                      <Badge
-                        key={`location-${location}`}
-                        variant="secondary"
-                        className="gap-2 pl-3"
+                        <X size={14} />
+                      </button>
+                    </Badge>
+                  ))}
+                  {selectedLocations.map((locationId) => (
+                    <Badge
+                      key={`location-${locationId}`}
+                      variant="secondary"
+                      className="gap-2 pl-3"
+                    >
+                      {getLocationName(locationId)}
+                      <button
+                        onClick={() => removeLocationFilter(locationId)}
+                        className="hover:text-red-600 cursor-pointer"
                       >
-                        {location}
-                        <button
-                          onClick={() => removeLocationFilter(location)}
-                          className="hover:text-red-600 cursor-pointer"
-                        >
-                          <X size={14} />
-                        </button>
-                      </Badge>
-                    ))}
-                    {(selectedIndustries.length > 0 ||
-                      selectedLocations.length > 0) && (
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={clearAllFilters}
-                          className="text-xs cursor-pointer"
-                        >
-                          {BUTTON_TEXT.clearAll}
-                        </Button>
-                      )}
-                  </div>
-                </FadeIn>
-              )}
+                        <X size={14} />
+                      </button>
+                    </Badge>
+                  ))}
+                  {selectedJobRoles.map((jobRoleId) => (
+                    <Badge
+                      key={`jobRole-${jobRoleId}`}
+                      variant="secondary"
+                      className="gap-2 pl-3"
+                    >
+                      {getJobRoleName(jobRoleId)}
+                      <button
+                        onClick={() => removeJobRoleFilter(jobRoleId)}
+                        className="hover:text-red-600 cursor-pointer"
+                      >
+                        <X size={14} />
+                      </button>
+                    </Badge>
+                  ))}
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={clearAllFilters}
+                    className="text-xs cursor-pointer"
+                  >
+                    {BUTTON_TEXT.clearAll}
+                  </Button>
+                </div>
+              </FadeIn>
+            )}
 
             {/* Main Content - Filters and Jobs */}
             <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
@@ -401,21 +358,23 @@ const JobsContent = observer(function JobsContent() {
                 <div className="sticky top-20 space-y-6">
                   {/* Industry Filter */}
                   <div className="bg-white p-4 rounded-lg border border-gray-200">
-                    <h3 className="font-semibold text-gray-900 mb-4">{JOBS_FILTER_LABELS.industry}</h3>
+                    <h3 className="font-semibold text-gray-900 mb-4">
+                      {JOBS_FILTER_LABELS.industry}
+                    </h3>
                     <div className="space-y-3">
                       {industries.map((industry) => (
-                        <div key={industry} className="flex items-center">
+                        <div key={industry.id} className="flex items-center">
                           <Checkbox
-                            id={`industry-${industry}`}
-                            checked={selectedIndustries.includes(industry)}
-                            onCheckedChange={() => toggleIndustry(industry)}
+                            id={`industry-${industry.id}`}
+                            checked={selectedIndustries.includes(industry.id)}
+                            onCheckedChange={() => toggleIndustry(industry.id)}
                             className="cursor-pointer"
                           />
                           <label
-                            htmlFor={`industry-${industry}`}
+                            htmlFor={`industry-${industry.id}`}
                             className="ml-2 text-sm text-gray-700 cursor-pointer hover:text-gray-900"
                           >
-                            {industry}
+                            {industry.name}
                           </label>
                         </div>
                       ))}
@@ -424,21 +383,48 @@ const JobsContent = observer(function JobsContent() {
 
                   {/* Location Filter */}
                   <div className="bg-white p-4 rounded-lg border border-gray-200">
-                    <h3 className="font-semibold text-gray-900 mb-4">{JOBS_FILTER_LABELS.location}</h3>
+                    <h3 className="font-semibold text-gray-900 mb-4">
+                      {JOBS_FILTER_LABELS.location}
+                    </h3>
                     <div className="space-y-3">
                       {locations.map((location) => (
-                        <div key={location} className="flex items-center">
+                        <div key={location.id} className="flex items-center">
                           <Checkbox
-                            id={`location-${location}`}
-                            checked={selectedLocations.includes(location)}
-                            onCheckedChange={() => toggleLocation(location)}
+                            id={`location-${location.id}`}
+                            checked={selectedLocations.includes(location.id)}
+                            onCheckedChange={() => toggleLocation(location.id)}
                             className="cursor-pointer"
                           />
                           <label
-                            htmlFor={`location-${location}`}
+                            htmlFor={`location-${location.id}`}
                             className="ml-2 text-sm text-gray-700 cursor-pointer hover:text-gray-900"
                           >
-                            {location}
+                            {location.name}
+                          </label>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Job Role Filter */}
+                  <div className="bg-white p-4 rounded-lg border border-gray-200">
+                    <h3 className="font-semibold text-gray-900 mb-4">
+                      {JOBS_FILTER_LABELS.jobRole}
+                    </h3>
+                    <div className="space-y-3">
+                      {jobRoles.map((jobRole) => (
+                        <div key={jobRole.id} className="flex items-center">
+                          <Checkbox
+                            id={`jobRole-${jobRole.id}`}
+                            checked={selectedJobRoles.includes(jobRole.id)}
+                            onCheckedChange={() => toggleJobRole(jobRole.id)}
+                            className="cursor-pointer"
+                          />
+                          <label
+                            htmlFor={`jobRole-${jobRole.id}`}
+                            className="ml-2 text-sm text-gray-700 cursor-pointer hover:text-gray-900"
+                          >
+                            {jobRole.name}
                           </label>
                         </div>
                       ))}
@@ -450,23 +436,41 @@ const JobsContent = observer(function JobsContent() {
               {/* Jobs List */}
               <div className="lg:col-span-3">
                 <div className="space-y-4">
-                  {paginatedJobs.length > 0 ? (
+                  {!isMounted ? (
+                    <div className="text-center py-12">
+                      <p className="text-gray-500 text-lg">Loading jobs...</p>
+                    </div>
+                  ) : jobPostingStore.loading ? (
+                    <div className="text-center py-12">
+                      <div className="loader ease-linear rounded-full border-8 border-t-8 border-gray-200 h-16 w-16 mx-auto"></div>
+                    </div>
+                  ) : paginatedJobs.length > 0 ? (
                     paginatedJobs.map((job) => (
                       <FadeIn key={job.id}>
                         <Card className="p-6 hover:shadow-md transition-shadow duration-300">
                           <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
                             <div className="flex-1">
                               <h3 className="text-xl font-bold text-primary mb-2">
-                                {job.title}
+                                {job.jobRoleName}
                               </h3>
                               <div className="flex flex-col md:flex-row md:items-center gap-2 md:gap-6 text-gray-600">
                                 <div className="flex items-center gap-2">
-                                  <span className="font-medium">{JOBS_PAGE_TEXT.industry}:</span>
-                                  <span>{job.industry}</span>
+                                  <span className="font-medium">
+                                    {JOBS_PAGE_TEXT.industry}:
+                                  </span>
+                                  <span>{job.industryName}</span>
                                 </div>
                                 <div className="flex items-center gap-2">
-                                  <span className="font-medium">{JOBS_PAGE_TEXT.location}:</span>
-                                  <span>{job.location}</span>
+                                  <span className="font-medium">
+                                    {JOBS_PAGE_TEXT.location}:
+                                  </span>
+                                  <span>{job.locationName}</span>
+                                </div>
+                                <div className="flex items-center gap-2">
+                                  <span className="font-medium">Openings:</span>
+                                  <span className="text-primary font-semibold">
+                                    {job.Openings}
+                                  </span>
                                 </div>
                               </div>
                             </div>
@@ -478,7 +482,7 @@ const JobsContent = observer(function JobsContent() {
                               >
                                 {JOBS_PAGE_TEXT.viewButton}
                               </Button>
-                              <JobApplicationModal jobTitle={job.title}>
+                              <JobApplicationModal jobTitle={job.jobRoleName}>
                                 <Button className="bg-primary hover:bg-primary/90 text-white whitespace-nowrap cursor-pointer">
                                   {JOBS_PAGE_TEXT.applyButton}
                                 </Button>
@@ -509,10 +513,11 @@ const JobsContent = observer(function JobsContent() {
                                 currentPage > 1 &&
                                 handlePageChange(currentPage - 1)
                               }
-                              className={`cursor-pointer ${currentPage === 1
-                                ? "pointer-events-none opacity-50"
-                                : ""
-                                }`}
+                              className={`cursor-pointer ${
+                                currentPage === 1
+                                  ? "pointer-events-none opacity-50"
+                                  : ""
+                              }`}
                             />
                           </PaginationItem>
 
@@ -542,10 +547,11 @@ const JobsContent = observer(function JobsContent() {
                                 currentPage < totalPages &&
                                 handlePageChange(currentPage + 1)
                               }
-                              className={`cursor-pointer ${currentPage === totalPages
-                                ? "pointer-events-none opacity-50"
-                                : ""
-                                }`}
+                              className={`cursor-pointer ${
+                                currentPage === totalPages
+                                  ? "pointer-events-none opacity-50"
+                                  : ""
+                              }`}
                             />
                           </PaginationItem>
                         </PaginationContent>
@@ -587,7 +593,7 @@ const JobsContent = observer(function JobsContent() {
               <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
                 <DialogHeader>
                   <DialogTitle className="text-2xl">
-                    {selectedJob?.title}
+                    {selectedJob?.jobRoleName}
                   </DialogTitle>
                 </DialogHeader>
 
@@ -600,7 +606,7 @@ const JobsContent = observer(function JobsContent() {
                           {JOBS_PAGE_TEXT.industry}
                         </p>
                         <p className="text-lg font-semibold">
-                          {selectedJob.industry}
+                          {selectedJob.industryName}
                         </p>
                       </div>
                       <div>
@@ -608,44 +614,46 @@ const JobsContent = observer(function JobsContent() {
                           {JOBS_PAGE_TEXT.location}
                         </p>
                         <p className="text-lg font-semibold">
-                          {selectedJob.location}
+                          {selectedJob.locationName}
+                        </p>
+                      </div>
+                      <div>
+                        <p className="text-sm font-medium text-gray-600">
+                          Available Openings
+                        </p>
+                        <p className="text-lg font-semibold text-primary">
+                          {selectedJob.Openings}
                         </p>
                       </div>
                     </div>
 
-                    {/* Job Description */}
-                    <div>
-                      <h3 className="text-lg font-semibold mb-2">
-                        {JOBS_PAGE_TEXT.jobDescription}
-                      </h3>
-                      <p className="text-gray-700 leading-relaxed">
-                        {selectedJob.description}
-                      </p>
-                    </div>
+                    {/* Requirements */}
+                    {selectedJob.Requirement && (
+                      <div>
+                        <h3 className="text-lg font-semibold mb-3">
+                          {JOBS_PAGE_TEXT.requiredQualifications}
+                        </h3>
+                        <div className="text-gray-700 leading-relaxed whitespace-pre-wrap">
+                          {selectedJob.Requirement}
+                        </div>
+                      </div>
+                    )}
 
-                    {/* Qualifications */}
-                    <div>
-                      <h3 className="text-lg font-semibold mb-3">
-                        {JOBS_PAGE_TEXT.requiredQualifications}
-                      </h3>
-                      <ul className="space-y-2">
-                        {selectedJob.qualifications.map((qual, index) => (
-                          <li
-                            key={index}
-                            className="flex items-start gap-3 text-gray-700"
-                          >
-                            <span className="text-primary font-bold mt-1">
-                              •
-                            </span>
-                            <span>{qual}</span>
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
+                    {!selectedJob.Requirement && (
+                      <div>
+                        <h3 className="text-lg font-semibold mb-3">
+                          {JOBS_PAGE_TEXT.requiredQualifications}
+                        </h3>
+                        <p className="text-gray-500 italic">
+                          No specific requirements listed. Please contact us for
+                          more details.
+                        </p>
+                      </div>
+                    )}
 
                     {/* Apply Button */}
                     <div className="pt-6 border-t flex gap-3">
-                      <JobApplicationModal jobTitle={selectedJob.title}>
+                      <JobApplicationModal jobTitle={selectedJob.jobRoleName}>
                         <Button className="bg-primary hover:bg-primary/90 text-white cursor-pointer flex-1">
                           {JOBS_PAGE_TEXT.applyNowButton}
                         </Button>
@@ -671,16 +679,19 @@ const JobsContent = observer(function JobsContent() {
 
 export default function Jobs() {
   return (
-    <Suspense fallback={
-      <Layout>
-        <section className="section-padding">
-          <div className="container-custom text-center">
-            <p>Loading jobs...</p>
-          </div>
-        </section>
-      </Layout>
-    }>
+    <Suspense
+      fallback={
+        <Layout>
+          <section className="section-padding">
+            <div className="container-custom text-center">
+              <p>Loading jobs...</p>
+            </div>
+          </section>
+        </Layout>
+      }
+    >
       <JobsContent />
     </Suspense>
   );
 }
+2;

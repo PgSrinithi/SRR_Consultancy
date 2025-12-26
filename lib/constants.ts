@@ -235,6 +235,7 @@ export const JOBS_FILTER_LABELS = {
   activeFilters: "Active Filters:",
   industry: "Industry",
   location: "Location",
+  jobRole: "Job Role",
 };
 
 export const JOBS_PAGE_TEXT = {
