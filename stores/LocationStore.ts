@@ -1,10 +1,5 @@
+import { Location } from '@/interface/locations';
 import { makeAutoObservable } from 'mobx';
-
-export interface Location {
-    id: string;
-    name: string;
-    [key: string]: any;
-}
 
 class LocationStore {
     locations: Location[] = [];

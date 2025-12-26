@@ -14,6 +14,7 @@ export async function GET() {
 
     const locations = records.map(record => ({
       id: record.id,
+      name: record.get('Name'),
       ...record.fields,
     }));
 
