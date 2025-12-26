@@ -110,7 +110,6 @@ const JobsContent = observer(function JobsContent() {
         .filter((loc) => loc.name),
     [locationStore.locations]
   );
-  console.log("Locations:", locationStore.locations, locations);
   const jobRoles = useMemo(
     () =>
       jobRoleStore.jobRoles

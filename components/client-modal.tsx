@@ -1,9 +1,11 @@
 "use client";
 
-import { useState } from "react";
-import { useForm, Controller } from "react-hook-form";
+import { useState, useEffect } from "react";
+import { observer } from "mobx-react-lite";
+import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
+
 import {
   Dialog,
   DialogContent,
@@ -31,49 +33,61 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { useToast } from "@/hooks/use-toast";
 import { Loader2 } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
+
+import { industryStore, locationStore } from "@/stores";
+
 import {
   CLIENT_MODAL_TITLE,
   CLIENT_MODAL_DESCRIPTION,
   CLIENT_FORM_LABELS,
   CLIENT_FORM_PLACEHOLDERS,
-  CLIENT_INDUSTRIES,
-  CLIENT_LOCATIONS,
   BUTTON_TEXT,
   TOAST_MESSAGES,
   VALIDATION_MESSAGES,
 } from "@/lib/constants";
 
-const clientFormSchema = z.object({
-  name: z.string().min(2, VALIDATION_MESSAGES.nameRequired),
-  email: z.string().email(VALIDATION_MESSAGES.emailInvalid),
-  phone: z.string().min(10, VALIDATION_MESSAGES.phoneInvalid),
-  businessName: z.string().min(2, VALIDATION_MESSAGES.businessNameRequired),
-  industry: z.string().min(1, VALIDATION_MESSAGES.industryRequired),
-  otherIndustry: z.string().optional(),
-  locations: z.array(z.string()).min(1, VALIDATION_MESSAGES.locationsRequired),
-  otherLocation: z.string().optional(),
-  message: z.string().optional(),
-}).refine(
-  (data) => data.industry !== "Other" || (data.otherIndustry && data.otherIndustry.trim().length > 0),
-  {
-    message: VALIDATION_MESSAGES.industrySpecifyRequired,
-    path: ["otherIndustry"],
-  }
-).refine(
-  (data) => !data.locations.includes("Other") || (data.otherLocation && data.otherLocation.trim().length > 0),
-  {
-    message: VALIDATION_MESSAGES.locationSpecifyRequired,
-    path: ["otherLocation"],
-  }
-);
+/* -----------------------------
+   Schema
+------------------------------ */
+const clientFormSchema = z
+  .object({
+    name: z.string().min(2, VALIDATION_MESSAGES.nameRequired),
+    email: z.string().email(VALIDATION_MESSAGES.emailInvalid),
+    phone: z.string().min(10, VALIDATION_MESSAGES.phoneInvalid),
+    businessName: z.string().min(2, VALIDATION_MESSAGES.businessNameRequired),
+
+    industry: z.string().min(1, VALIDATION_MESSAGES.industryRequired),
+    otherIndustryName: z.string().optional(),
+    otherIndustryDescription: z.string().optional(),
+
+    locations: z
+      .array(z.string())
+      .min(1, VALIDATION_MESSAGES.locationsRequired),
+    otherLocationName: z.string().optional(),
+
+    message: z.string().optional(),
+  })
+  .refine((d) => d.industry !== "Other" || !!d.otherIndustryName?.trim(), {
+    path: ["otherIndustryName"],
+    message: "Industry name is required",
+  })
+  .refine(
+    (d) => !d.locations.includes("Other") || !!d.otherLocationName?.trim(),
+    { path: ["otherLocationName"], message: "Location name is required" }
+  );
 
 interface ClientModalProps {
   children: React.ReactNode;
 }
 
-export function ClientModal({ children }: ClientModalProps) {
+/* -----------------------------
+   Component
+------------------------------ */
+export const ClientModal = observer(function ClientModal({
+  children,
+}: ClientModalProps) {
   const [open, setOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { toast } = useToast();
@@ -86,28 +100,107 @@ export function ClientModal({ children }: ClientModalProps) {
       phone: "",
       businessName: "",
       industry: "",
-      otherIndustry: "",
       locations: [],
-      otherLocation: "",
       message: "",
+      otherIndustryName: "",
+      otherIndustryDescription: "",
+      otherLocationName: "",
     },
   });
 
+  useEffect(() => {
+    industryStore.fetchIndustries?.();
+    locationStore.fetchLocations?.();
+  }, []);
+
+  /* -----------------------------
+     Helpers
+  ------------------------------ */
+  const toggleLocation = (id: string) => {
+    const current = form.getValues("locations");
+    form.setValue(
+      "locations",
+      current.includes(id) ? current.filter((l) => l !== id) : [...current, id]
+    );
+  };
+
+  const industryExists = (name: string) =>
+    industryStore.industries.some(
+      (i) => i.name.toLowerCase() === name.toLowerCase()
+    );
+
+  const locationExists = (name: string) =>
+    locationStore.locations.some(
+      (l) => l.name.toLowerCase() === name.toLowerCase()
+    );
+
+  /* -----------------------------
+     Submit
+  ------------------------------ */
   async function onSubmit(values: z.infer<typeof clientFormSchema>) {
     setIsSubmitting(true);
 
     try {
-      const response = await fetch("/api/client-inquiry", {
+      let industryId = values.industry;
+      let locationIds = values.locations.filter((l) => l !== "Other");
+
+      /* ---------- Industry: Other ---------- */
+      if (values.industry === "Other") {
+        if (industryExists(values.otherIndustryName!)) {
+          throw new Error("Industry already exists");
+        }
+
+        const res = await fetch("/api/industry", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            name: values.otherIndustryName,
+            description: values.otherIndustryDescription || "",
+          }),
+        });
+
+        if (!res.ok) throw new Error("Failed to save industry");
+
+        const data = await res.json();
+        industryId = data.id;
+        await industryStore.fetchIndustries?.();
+      }
+
+      /* ---------- Location: Other ---------- */
+      if (values.locations.includes("Other")) {
+        if (locationExists(values.otherLocationName!)) {
+          throw new Error("Location already exists");
+        }
+
+        const res = await fetch("/api/location", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ name: values.otherLocationName }),
+        });
+
+        if (!res.ok) throw new Error("Failed to save location");
+
+        const data = await res.json();
+        locationIds.push(data.id);
+        await locationStore.fetchLocations?.();
+      }
+
+      /* ---------- Save Client ---------- */
+      const response = await fetch("/api/clients", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(values),
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: values.name,
+          email: values.email,
+          phoneNumber: values.phone,
+          businessName: values.businessName,
+          industry: [industryId],
+          location: locationIds,
+          message: values.message,
+        }),
       });
 
-      if (!response.ok) {
-        throw new Error("Failed to submit inquiry");
-      }
+      if (!response.ok) throw new Error();
 
       setOpen(false);
       form.reset();
@@ -115,83 +208,58 @@ export function ClientModal({ children }: ClientModalProps) {
       toast({
         title: TOAST_MESSAGES.inquirySuccess.title,
         description: TOAST_MESSAGES.inquirySuccess.description,
-        duration: 5000,
       });
-    } catch (error) {
-      console.error("Error submitting inquiry:", error);
+    } catch (err: any) {
       toast({
-        title: TOAST_MESSAGES.inquiryError.title,
-        description: TOAST_MESSAGES.inquiryError.description,
+        title: "Error",
+        description: err.message || TOAST_MESSAGES.inquiryError.description,
         variant: "destructive",
-        duration: 5000,
       });
     } finally {
       setIsSubmitting(false);
     }
   }
 
-  const toggleLocation = (location: string) => {
-    const currentLocations = form.getValues("locations");
-    if (currentLocations.includes(location)) {
-      form.setValue(
-        "locations",
-        currentLocations.filter((l) => l !== location)
-      );
-    } else {
-      form.setValue("locations", [...currentLocations, location]);
-    }
-  };
-
+  /* -----------------------------
+     Render
+  ------------------------------ */
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>{children}</DialogTrigger>
-      <DialogContent className="sm:max-w-[600px] bg-white border-none shadow-2xl max-h-[90vh] overflow-y-auto">
+
+      <DialogContent className="sm:max-w-[600px] max-h-[90vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle className="text-2xl font-heading font-bold text-primary">
-            {CLIENT_MODAL_TITLE}
-          </DialogTitle>
-          <DialogDescription>
-            {CLIENT_MODAL_DESCRIPTION}
-          </DialogDescription>
+          <DialogTitle>{CLIENT_MODAL_TITLE}</DialogTitle>
+          <DialogDescription>{CLIENT_MODAL_DESCRIPTION}</DialogDescription>
         </DialogHeader>
 
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 mt-2">
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
             {/* Name */}
             <FormField
               control={form.control}
               name="name"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="text-foreground/80">
-                    {CLIENT_FORM_LABELS.name}
-                  </FormLabel>
+                  <FormLabel>{CLIENT_FORM_LABELS.name}</FormLabel>
                   <FormControl>
-                    <Input
-                      placeholder={CLIENT_FORM_PLACEHOLDERS.name}
-                      {...field}
-                      className="bg-slate-50 border-slate-200 focus:border-accent focus:ring-accent"
-                    />
+                    <Input {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
             />
 
-            {/* Email and Phone */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {/* Email + Phone */}
+            <div className="grid md:grid-cols-2 gap-4">
               <FormField
                 control={form.control}
                 name="email"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className="text-foreground/80">{CLIENT_FORM_LABELS.email}</FormLabel>
+                    <FormLabel>{CLIENT_FORM_LABELS.email}</FormLabel>
                     <FormControl>
-                      <Input
-                        placeholder={CLIENT_FORM_PLACEHOLDERS.email}
-                        {...field}
-                        className="bg-slate-50 border-slate-200 focus:border-accent focus:ring-accent"
-                      />
+                      <Input {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -203,13 +271,9 @@ export function ClientModal({ children }: ClientModalProps) {
                 name="phone"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className="text-foreground/80">{CLIENT_FORM_LABELS.phone}</FormLabel>
+                    <FormLabel>{CLIENT_FORM_LABELS.phone}</FormLabel>
                     <FormControl>
-                      <Input
-                        placeholder={CLIENT_FORM_PLACEHOLDERS.phone}
-                        {...field}
-                        className="bg-slate-50 border-slate-200 focus:border-accent focus:ring-accent"
-                      />
+                      <Input {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -223,15 +287,9 @@ export function ClientModal({ children }: ClientModalProps) {
               name="businessName"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="text-foreground/80">
-                    {CLIENT_FORM_LABELS.businessName}
-                  </FormLabel>
+                  <FormLabel>{CLIENT_FORM_LABELS.businessName}</FormLabel>
                   <FormControl>
-                    <Input
-                      placeholder={CLIENT_FORM_PLACEHOLDERS.businessName}
-                      {...field}
-                      className="bg-slate-50 border-slate-200 focus:border-accent focus:ring-accent"
-                    />
+                    <Input {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -244,19 +302,20 @@ export function ClientModal({ children }: ClientModalProps) {
               name="industry"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="text-foreground/80">{CLIENT_FORM_LABELS.industry}</FormLabel>
+                  <FormLabel>{CLIENT_FORM_LABELS.industry}</FormLabel>
                   <Select value={field.value} onValueChange={field.onChange}>
                     <FormControl>
-                      <SelectTrigger className="bg-slate-50 border-slate-200 focus:border-accent focus:ring-accent">
-                        <SelectValue placeholder={CLIENT_FORM_PLACEHOLDERS.industry} />
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select industry" />
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      {CLIENT_INDUSTRIES.map((industry) => (
-                        <SelectItem key={industry} value={industry}>
-                          {industry}
+                      {industryStore.industries.map((i) => (
+                        <SelectItem key={i.id} value={i.id}>
+                          {i.name}
                         </SelectItem>
                       ))}
+                      <SelectItem value="Other">Other</SelectItem>
                     </SelectContent>
                   </Select>
                   <FormMessage />
@@ -264,27 +323,36 @@ export function ClientModal({ children }: ClientModalProps) {
               )}
             />
 
-            {/* Other Industry Text Field */}
+            {/* Other Industry */}
             {form.watch("industry") === "Other" && (
-              <FormField
-                control={form.control}
-                name="otherIndustry"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel className="text-foreground/80">
-                      {CLIENT_FORM_LABELS.otherIndustry}
-                    </FormLabel>
-                    <FormControl>
-                      <Input
-                        placeholder={CLIENT_FORM_PLACEHOLDERS.otherIndustry}
-                        {...field}
-                        className="bg-slate-50 border-slate-200 focus:border-accent focus:ring-accent"
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+              <>
+                <FormField
+                  control={form.control}
+                  name="otherIndustryName"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Industry Name</FormLabel>
+                      <FormControl>
+                        <Input {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="otherIndustryDescription"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Industry Description</FormLabel>
+                      <FormControl>
+                        <Textarea {...field} />
+                      </FormControl>
+                    </FormItem>
+                  )}
+                />
+              </>
             )}
 
             {/* Locations */}
@@ -293,50 +361,40 @@ export function ClientModal({ children }: ClientModalProps) {
               name="locations"
               render={() => (
                 <FormItem>
-                  <FormLabel className="text-foreground/80">
-                    {CLIENT_FORM_LABELS.locations}
-                  </FormLabel>
-                  <div className="space-y-2 bg-slate-50 p-3 rounded-md border border-slate-200">
-                    {CLIENT_LOCATIONS.map((location) => (
-                      <div key={location} className="flex items-center">
+                  <FormLabel>{CLIENT_FORM_LABELS.locations}</FormLabel>
+                  <div className="space-y-2 border rounded p-3">
+                    {locationStore.locations.map((l) => (
+                      <div key={l.id} className="flex items-center gap-2">
                         <Checkbox
-                          id={`location-${location}`}
-                          checked={form
-                            .getValues("locations")
-                            .includes(location)}
-                          onCheckedChange={() => toggleLocation(location)}
-                          className="cursor-pointer"
+                          checked={form.getValues("locations").includes(l.id)}
+                          onCheckedChange={() => toggleLocation(l.id)}
                         />
-                        <label
-                          htmlFor={`location-${location}`}
-                          className="ml-2 text-sm text-foreground/80 cursor-pointer"
-                        >
-                          {location}
-                        </label>
+                        <span>{l.name}</span>
                       </div>
                     ))}
+                    <div className="flex items-center gap-2">
+                      <Checkbox
+                        checked={form.getValues("locations").includes("Other")}
+                        onCheckedChange={() => toggleLocation("Other")}
+                      />
+                      <span>Other</span>
+                    </div>
                   </div>
                   <FormMessage />
                 </FormItem>
               )}
             />
 
-            {/* Other Location Text Field */}
+            {/* Other Location */}
             {form.watch("locations").includes("Other") && (
               <FormField
                 control={form.control}
-                name="otherLocation"
+                name="otherLocationName"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className="text-foreground/80">
-                      {CLIENT_FORM_LABELS.otherLocation}
-                    </FormLabel>
+                    <FormLabel>Location Name</FormLabel>
                     <FormControl>
-                      <Input
-                        placeholder={CLIENT_FORM_PLACEHOLDERS.otherLocation}
-                        {...field}
-                        className="bg-slate-50 border-slate-200 focus:border-accent focus:ring-accent"
-                      />
+                      <Input {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -350,30 +408,19 @@ export function ClientModal({ children }: ClientModalProps) {
               name="message"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="text-foreground/80">
-                    {CLIENT_FORM_LABELS.message}
-                  </FormLabel>
+                  <FormLabel>{CLIENT_FORM_LABELS.message}</FormLabel>
                   <FormControl>
-                    <Textarea
-                      placeholder={CLIENT_FORM_PLACEHOLDERS.message}
-                      {...field}
-                      className="bg-slate-50 border-slate-200 focus:border-accent focus:ring-accent min-h-[100px]"
-                    />
+                    <Textarea {...field} />
                   </FormControl>
-                  <FormMessage />
                 </FormItem>
               )}
             />
 
-            <Button
-              type="submit"
-              className="w-full bg-primary hover:bg-primary/90 text-white"
-              disabled={isSubmitting}
-            >
+            <Button type="submit" disabled={isSubmitting} className="w-full">
               {isSubmitting ? (
                 <>
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  Submitting...
+                  Saving...
                 </>
               ) : (
                 BUTTON_TEXT.submitInquiry
@@ -384,4 +431,4 @@ export function ClientModal({ children }: ClientModalProps) {
       </DialogContent>
     </Dialog>
   );
-}
+});

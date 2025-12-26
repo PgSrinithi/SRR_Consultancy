@@ -40,7 +40,6 @@ export function ContactModal({ children }: { children: React.ReactNode }) {
     
     // Simulate API call
     setTimeout(() => {
-      console.log("Form submitted:", values);
       setIsSubmitting(false);
       setOpen(false);
       form.reset();
