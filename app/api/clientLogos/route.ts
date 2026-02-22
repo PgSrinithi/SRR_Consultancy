@@ -21,13 +21,35 @@ const normalizeImageUrl = (url?: string | null): string | null => {
   }
 };
 
-const normalizeLogos = (items: ClientLogo[]): ClientLogo[] =>
+type RawClientLogo = {
+  id: string;
+  name: unknown;
+  isActive: unknown;
+  image: unknown;
+};
+
+const normalizeLogos = (items: RawClientLogo[]): ClientLogo[] =>
   items
+    .map((item) => {
+      const name = typeof item.name === "string" ? item.name.trim() : "";
+      const image = normalizeImageUrl(
+        typeof item.image === "string" ? item.image : null
+      );
+
+      return {
+        id: item.id,
+        name,
+        isActive: Boolean(item.isActive),
+        image: image || "",
+      };
+    })
     .map((item) => ({
-      ...item,
-      image: normalizeImageUrl(item.image) || "",
+      id: item.id,
+      name: item.name,
+      isActive: item.isActive,
+      image: item.image,
     }))
-    .filter((item) => Boolean(item.name) && Boolean(item.image));
+    .filter((item) => item.name.length > 0 && item.image.length > 0);
 
 export async function GET() {
   try {
@@ -36,15 +58,31 @@ export async function GET() {
 
     const clientLogos: ClientLogo[] = normalizeLogos(
       records
-      .map((record) => ({
-        id: record.id,
-        name: record.fields.name ?? null,
-        isActive: record.fields.isActive ?? false,
-        image:
-          record.fields.logo?.[0]?.thumbnails?.large?.url ??
-          record.fields.logo?.[0]?.url ??
-          null,
-      }))
+        .map((record) => {
+          const fields = record.fields as Record<string, unknown>;
+          const logoField = fields.logo;
+          let image: string | null = null;
+
+          if (Array.isArray(logoField) && logoField.length > 0) {
+            const firstLogo = logoField[0] as {
+              url?: unknown;
+              thumbnails?: { large?: { url?: unknown } };
+            };
+
+            image =
+              (typeof firstLogo.thumbnails?.large?.url === "string"
+                ? firstLogo.thumbnails.large.url
+                : null) ??
+              (typeof firstLogo.url === "string" ? firstLogo.url : null);
+          }
+
+          return {
+            id: record.id,
+            name: fields.name,
+            isActive: fields.isActive ?? false,
+            image,
+          };
+        })
     );
 
     return NextResponse.json(clientLogos);
