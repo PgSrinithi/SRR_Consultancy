@@ -15,17 +15,32 @@ class IndustryStore {
     makeAutoObservable(this, {}, { autoBind: true });
   }
 
+  getCookie(name: string): string | null {
+    if (typeof document === "undefined") return null;
+
+    const match = document.cookie
+      .split("; ")
+      .find((row) => row.startsWith(name + "="));
+
+    return match ? decodeURIComponent(match.split("=")[1]) : null;
+  }
+
   async fetchIndustries() {
     this.loading = true;
     this.error = null;
 
     try {
-      const response = await fetch("/api/industry", {
-        cache: "no-store", 
-        headers: {
-          "Cache-Control": "no-cache",
-        },
-      });
+      const cached = this.getCookie("industries");
+
+      if (cached) {
+        runInAction(() => {
+          this.industries = JSON.parse(cached);
+          this.loading = false;
+        });
+        return;
+      }
+
+      const response = await fetch("/api/industry");
 
       if (!response.ok) {
         throw new Error(`Failed to fetch industries (${response.status})`);
@@ -37,7 +52,6 @@ class IndustryStore {
         this.industries = data;
         this.loading = false;
       });
-
     } catch (err) {
       runInAction(() => {
         this.error =

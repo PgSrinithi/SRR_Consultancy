@@ -11,10 +11,16 @@ import {
   jobRoleStore,
   jobPostingStore,
 } from "@/stores";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 const StoreInitializer = observer(function StoreInitializer() {
+  const [mounted, setMounted] = useState(false);
   useEffect(() => {
+    setMounted(true);
+  }, []);
+  useEffect(() => {
+    if (!mounted) return;
+
     if (industryStore.industries.length === 0) {
       industryStore.fetchIndustries();
     }

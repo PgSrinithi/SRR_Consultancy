@@ -11,6 +11,7 @@ import {
   jobPostingStore,
   jobRoleStore,
   locationStore,
+  clientLogosStore,
 } from "@/stores";
 import { useState, useMemo, useEffect, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
@@ -58,10 +59,11 @@ const JobsContent = observer(function JobsContent() {
     industryStore.loading ||
     locationStore.loading ||
     jobRoleStore.loading ||
-    jobPostingStore.loading;
-
+    jobPostingStore.loading ||
+    clientLogosStore.loading;
   useEffect(() => {
     setIsMounted(true);
+    clientLogosStore.fetchClientLogos();
   }, []);
 
   // Get industry from query parameter on component mount

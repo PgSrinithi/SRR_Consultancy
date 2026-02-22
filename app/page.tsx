@@ -5,6 +5,7 @@ import { ClientModal } from "@/components/client-modal";
 import Layout from "@/components/layout";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import ClientLogosCarousel from "@/components/client-logos-carousel";
 import {
   ArrowRight,
   CheckCircle2,
@@ -17,7 +18,7 @@ import { FadeIn, StaggerContainer } from "@/components/animations";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { observer } from "mobx-react-lite";
-import { industryStore } from "@/stores";
+import { industryStore, clientLogosStore } from "@/stores";
 import {
   HERO_TITLE,
   HERO_DESCRIPTION,
@@ -58,6 +59,7 @@ const Home = observer(function Home() {
     if (industryStore.industries.length === 0 && !industryStore.loading) {
       industryStore.fetchIndustries();
     }
+    clientLogosStore.fetchClientLogos();
   }, []);
 
   // Extract industry names from store
@@ -289,6 +291,9 @@ const Home = observer(function Home() {
           </FadeIn>
         </div>
       </section>
+
+      {/* Client Logos Carousel */}
+      <ClientLogosCarousel />
 
       {/* Services Section */}
       <section id="services" className="section-padding">

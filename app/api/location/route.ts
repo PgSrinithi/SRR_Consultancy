@@ -1,21 +1,30 @@
 import { NextRequest, NextResponse } from "next/server";
 import Airtable from "airtable";
+import { cookies } from "next/headers";
 
-/* -----------------------------
-   Airtable Base Helper
------------------------------- */
 const getBase = () =>
   new Airtable({
     apiKey: process.env.AIRTABLE_API_KEY || "",
   }).base(process.env.AIRTABLE_BASE_ID || "");
 
-/* -----------------------------
-   GET: Fetch Locations
------------------------------- */
+const COOKIE_NAME = "locations";
+
 export async function GET() {
   try {
-    const base = getBase();
+    const cookieStore = await cookies();
+    const cached = cookieStore.get(COOKIE_NAME);
 
+    console.log("Location API HIT", cached);
+
+    // ✅ Serve from cookie if available
+    if (cached) {
+      console.log("Serving Locations from COOKIE");
+      return NextResponse.json(JSON.parse(cached.value));
+    }
+
+    console.log("Fetching Locations from AIRTABLE");
+
+    const base = getBase();
     const records = await base("Locations").select().all();
 
     const locations = records
@@ -24,6 +33,15 @@ export async function GET() {
         name: record.fields.Name ?? null,
       }))
       .filter((item) => item.name);
+
+    // ✅ Persist until user clears cookies
+    cookieStore.set(COOKIE_NAME, JSON.stringify(locations), {
+      httpOnly: false, // client-readable
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "lax",
+      path: "/",
+      expires: new Date("9999-12-31"),
+    });
 
     return NextResponse.json(locations);
   } catch (error) {
@@ -36,7 +54,8 @@ export async function GET() {
 }
 
 /* -----------------------------
-   POST: Create Location (Name only)
+   POST: Create Location
+   (Invalidate cookie)
 ------------------------------ */
 export async function POST(request: NextRequest) {
   try {
@@ -58,6 +77,8 @@ export async function POST(request: NextRequest) {
         },
       },
     ]);
+
+    (await cookies()).delete(COOKIE_NAME);
 
     return NextResponse.json(
       {

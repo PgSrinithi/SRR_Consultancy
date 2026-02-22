@@ -1,21 +1,30 @@
 import { NextRequest, NextResponse } from "next/server";
 import Airtable from "airtable";
+import { cookies } from "next/headers";
 
-/* -----------------------------
-   Airtable Base Helper
------------------------------- */
 const getBase = () =>
   new Airtable({
     apiKey: process.env.AIRTABLE_API_KEY || "",
   }).base(process.env.AIRTABLE_BASE_ID || "");
 
-/* -----------------------------
-   GET: Fetch Industries
------------------------------- */
+const COOKIE_NAME = "industries";
+
 export async function GET() {
   try {
-    const base = getBase();
+    const cookieStore = await cookies();
+    const cached = cookieStore.get(COOKIE_NAME);
 
+    console.log("Industry API HIT", cached);
+
+    // ✅ Serve from cookie
+    if (cached) {
+      console.log("Serving Industries from COOKIE");
+      return NextResponse.json(JSON.parse(cached.value));
+    }
+
+    console.log("Fetching Industries from AIRTABLE");
+
+    const base = getBase();
     const records = await base("Industry").select().all();
 
     const industries = records
@@ -25,6 +34,15 @@ export async function GET() {
         description: record.fields.Description ?? null,
       }))
       .filter((item) => item.name);
+
+    // ✅ Persist until user clears cookies
+    cookieStore.set(COOKIE_NAME, JSON.stringify(industries), {
+      httpOnly: false, // client-readable
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "lax",
+      path: "/",
+      expires: new Date("9999-12-31"),
+    });
 
     return NextResponse.json(industries);
   } catch (error) {
@@ -37,11 +55,12 @@ export async function GET() {
 }
 
 /* -----------------------------
-   POST: Create Industry (Name only)
+   POST: Create Industry
+   (Invalidate cookie)
 ------------------------------ */
 export async function POST(request: NextRequest) {
   try {
-    const { name , description} = await request.json();
+    const { name, description } = await request.json();
 
     if (!name || typeof name !== "string") {
       return NextResponse.json(
@@ -60,6 +79,8 @@ export async function POST(request: NextRequest) {
         },
       },
     ]);
+
+    (await cookies()).delete(COOKIE_NAME);
 
     return NextResponse.json(
       {
