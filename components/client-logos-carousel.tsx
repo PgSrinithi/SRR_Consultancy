@@ -42,7 +42,7 @@ const ClientLogosCarousel = observer(function ClientLogosCarousel() {
   };
 
   return (
-    <section className="section-padding bg-gradient-to-b from-slate-50 to-white">
+    <section id="clients" className="section-padding bg-gradient-to-b from-slate-50 to-white">
       <div className="container-custom">
         <FadeIn direction="up">
           <div className="text-center mb-12">

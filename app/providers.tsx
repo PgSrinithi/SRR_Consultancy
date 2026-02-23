@@ -33,7 +33,7 @@ const StoreInitializer = observer(function StoreInitializer() {
     if (jobPostingStore.jobPostings.length === 0) {
       jobPostingStore.fetchJobPostings();
     }
-  }, []);
+  }, [mounted]);
 
   return null;
 });

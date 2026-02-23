@@ -63,6 +63,18 @@ const JobsContent = observer(function JobsContent() {
     clientLogosStore.loading;
   useEffect(() => {
     setIsMounted(true);
+    if (industryStore.industries.length === 0 && !industryStore.loading) {
+      industryStore.fetchIndustries();
+    }
+    if (locationStore.locations.length === 0 && !locationStore.loading) {
+      locationStore.fetchLocations();
+    }
+    if (jobRoleStore.jobRoles.length === 0 && !jobRoleStore.loading) {
+      jobRoleStore.fetchJobRoles();
+    }
+    if (jobPostingStore.jobPostings.length === 0 && !jobPostingStore.loading) {
+      jobPostingStore.fetchJobPostings();
+    }
     clientLogosStore.fetchClientLogos();
   }, []);
 

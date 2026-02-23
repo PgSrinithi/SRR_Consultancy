@@ -5,7 +5,7 @@ import { usePathname } from "next/navigation";
 import { Menu, X, Phone, Mail, Facebook, Twitter, Linkedin, Instagram, MapPin } from "lucide-react";
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { ClientModal } from "@/components/client-modal";
 import Image from "next/image";
 import logoImage from "@/../public/assets/Logo.jpeg";
@@ -171,6 +171,9 @@ export default function Layout({ children }: { children: React.ReactNode }) {
               </Button>
             </SheetTrigger>
             <SheetContent side="right" className="w-[300px] sm:w-[400px]">
+              <SheetHeader className="sr-only">
+                <SheetTitle>Mobile navigation menu</SheetTitle>
+              </SheetHeader>
               <div className="mb-8 flex justify-center">
                  <Image src={logoImage} alt="SRR Logo" width={80} height={80} className="h-20 w-auto" />
               </div>

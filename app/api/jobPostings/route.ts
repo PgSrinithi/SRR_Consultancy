@@ -1,21 +1,9 @@
 import { NextResponse } from "next/server";
 import Airtable from "airtable";
-import { cookies } from "next/headers";
-
-const COOKIE_NAME = "jobPostings";
 
 export async function GET() {
   try {
-    const cookieStore = await cookies();
-    const cached = cookieStore.get(COOKIE_NAME);
-
-    console.log("JobPostings API HIT", cached);
-
-    // ✅ Serve from cookie if available
-    if (cached) {
-      console.log("Serving JobPostings from COOKIE");
-      return NextResponse.json(JSON.parse(cached.value));
-    }
+    console.log("JobPostings API HIT");
 
     console.log("Fetching JobPostings from AIRTABLE");
 
@@ -47,15 +35,6 @@ export async function GET() {
         Openings: record.fields.Openings ?? null,
       }))
       .filter((item) => item.jobId);
-
-    // ✅ Persist until user clears cookies
-    cookieStore.set(COOKIE_NAME, JSON.stringify(jobPostings), {
-      httpOnly: false, // must be readable by MobX
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "lax",
-      path: "/",
-      expires: new Date("9999-12-31"),
-    });
 
     return NextResponse.json(jobPostings);
   } catch (error) {
