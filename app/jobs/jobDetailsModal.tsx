@@ -42,7 +42,7 @@ export function JobDetailsModal({
 
         <div className="space-y-6">
           {/* Job Info */}
-          <div className="grid grid-cols-2 gap-4 pb-6 border-b">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pb-6 border-b">
             <div>
               <p className="text-sm font-medium text-gray-600">
                 {JOBS_PAGE_TEXT.industry}

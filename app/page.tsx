@@ -4,13 +4,11 @@ import { ContactModal } from "@/components/contact-modal";
 import { ClientModal } from "@/components/client-modal";
 import Layout from "@/components/layout";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
 import ClientLogosCarousel from "@/components/client-logos-carousel";
 import {
   ArrowRight,
   CheckCircle2,
   Users,
-  Building2,
   Globe2,
   Briefcase,
 } from "lucide-react";
@@ -28,11 +26,9 @@ import {
   ABOUT_TITLE,
   ABOUT_DESCRIPTION,
   ABOUT_FEATURES,
-  ABOUT_CEO_QUOTE,
   SECTORS_BADGE,
   SECTORS_TITLE,
   SECTORS_DESCRIPTION,
-  SECTOR_NAMES,
   SERVICES_BADGE,
   SERVICES_TITLE,
   SERVICES_DESCRIPTION,
@@ -72,7 +68,7 @@ const Home = observer(function Home() {
   return (
     <Layout>
       {/* Hero Section */}
-      <section className="relative h-[600px] md:h-[750px] w-full overflow-hidden">
+      <section className="relative h-[520px] sm:h-[600px] md:h-[750px] w-full overflow-hidden">
         <div
           className="absolute inset-0 bg-cover bg-center bg-no-repeat animate-[scale_10s_linear_infinite]"
           style={{ backgroundImage: `url(${heroImage.src})` }}
@@ -90,7 +86,7 @@ const Home = observer(function Home() {
             </FadeIn>
 
             <FadeIn delay={0.4} direction="up">
-              <h1 className="text-4xl md:text-7xl font-heading font-extrabold leading-tight text-white">
+              <h1 className="text-3xl sm:text-4xl md:text-7xl font-heading font-extrabold leading-tight text-white">
                 {HERO_TITLE.split("<br/>")[0]} <br />
                 <span className="text-transparent bg-clip-text bg-gradient-to-r from-white to-slate-300">
                   {HERO_TITLE.split("<br/>")[1] || ""}
@@ -129,10 +125,10 @@ const Home = observer(function Home() {
       </section>
 
       {/* Stats Section */}
-      <section className="py-12 -mt-20 relative z-10">
+      <section className="py-12 -mt-8 sm:-mt-12 md:-mt-20 relative z-10">
         <div className="container-custom">
           <FadeIn direction="up" delay={0.2}>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-8 bg-white/95 backdrop-blur-xl p-10 rounded-2xl shadow-2xl border border-slate-100">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6 md:gap-8 bg-white/95 backdrop-blur-xl p-6 sm:p-8 md:p-10 rounded-2xl shadow-2xl border border-slate-100">
               {STATS.map((stat, i) => (
                 <div
                   key={i}
@@ -166,12 +162,6 @@ const Home = observer(function Home() {
                   height={600}
                   className="rounded-xl shadow-2xl w-full object-cover aspect-[4/3] border-4 border-white"
                 />
-                {/* <div className="absolute bottom-8 left-8 bg-white/95 backdrop-blur p-6 rounded-lg shadow-xl max-w-xs hidden md:block border-l-4 border-primary hover:-translate-y-1 transition-transform">
-                  <p className="text-primary font-bold text-xl mb-1">
-                    &ldquo;{ABOUT_CEO_QUOTE}&rdquo;
-                  </p>
-                  <p className="text-sm text-slate-500">- CEO Message</p>
-                </div> */}
               </div>
             </FadeIn>
 
@@ -233,7 +223,7 @@ const Home = observer(function Home() {
               <p className="text-slate-600 text-lg">{SECTORS_DESCRIPTION}</p>
             </div>
           </FadeIn>
-          <StaggerContainer className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <StaggerContainer className="grid sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 gap-6">
             {displayedSectors.map((sector, idx) => (
               <div
                 key={idx}
@@ -342,7 +332,7 @@ const Home = observer(function Home() {
               delay={0.3}
               className="md:col-span-2 h-full"
             >
-              <div className="relative h-full min-h-[500px] rounded-2xl overflow-hidden shadow-2xl group">
+              <div className="relative h-full min-h-[320px] sm:min-h-[420px] md:min-h-[500px] rounded-2xl overflow-hidden shadow-2xl group">
                 <Image
                   src={logisticsImage}
                   alt="Global Operations"
