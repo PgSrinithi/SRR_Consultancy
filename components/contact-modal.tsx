@@ -77,7 +77,7 @@ export function ContactModal({ children }: { children: React.ReactNode }) {
                 <FormItem>
                   <FormLabel className="text-foreground/80">Full Name</FormLabel>
                   <FormControl>
-                    <Input placeholder="John Doe" {...field} className="bg-slate-50 border-slate-200 focus:border-accent focus:ring-accent" />
+                    <Input placeholder="Enter your name" {...field} className="bg-slate-50 border-slate-200 focus:border-accent focus:ring-accent" />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -92,7 +92,7 @@ export function ContactModal({ children }: { children: React.ReactNode }) {
                   <FormItem>
                     <FormLabel className="text-foreground/80">Email</FormLabel>
                     <FormControl>
-                      <Input placeholder="john@example.com" {...field} className="bg-slate-50 border-slate-200 focus:border-accent focus:ring-accent" />
+                      <Input placeholder="Enter your email" {...field} className="bg-slate-50 border-slate-200 focus:border-accent focus:ring-accent" />
                     </FormControl>
                     <FormMessage />
                   </FormItem>

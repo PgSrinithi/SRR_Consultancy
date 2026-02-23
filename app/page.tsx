@@ -47,7 +47,7 @@ import Image from "next/image";
 
 // Asset Imports
 import heroImage from "@/../public/assets/stock_images/professional_busines_09c23622.jpg";
-import aboutImage from "@/../public/assets/stock_images/business_handshake_d_10e5b8ea.jpg";
+import aboutImage from "@/../public/assets/stock_images/about-us.jpg";
 import logisticsImage from "@/../public/assets/stock_images/global_logistics_wor_3a6eb8f3.jpg";
 
 const Home = observer(function Home() {
@@ -90,7 +90,7 @@ const Home = observer(function Home() {
             </FadeIn>
 
             <FadeIn delay={0.4} direction="up">
-              <h1 className="text-4xl md:text-7xl font-heading font-extrabold leading-tight">
+              <h1 className="text-4xl md:text-7xl font-heading font-extrabold leading-tight text-white">
                 {HERO_TITLE.split("<br/>")[0]} <br />
                 <span className="text-transparent bg-clip-text bg-gradient-to-r from-white to-slate-300">
                   {HERO_TITLE.split("<br/>")[1] || ""}
@@ -166,12 +166,12 @@ const Home = observer(function Home() {
                   height={600}
                   className="rounded-xl shadow-2xl w-full object-cover aspect-[4/3] border-4 border-white"
                 />
-                <div className="absolute bottom-8 left-8 bg-white/95 backdrop-blur p-6 rounded-lg shadow-xl max-w-xs hidden md:block border-l-4 border-primary hover:-translate-y-1 transition-transform">
+                {/* <div className="absolute bottom-8 left-8 bg-white/95 backdrop-blur p-6 rounded-lg shadow-xl max-w-xs hidden md:block border-l-4 border-primary hover:-translate-y-1 transition-transform">
                   <p className="text-primary font-bold text-xl mb-1">
                     &ldquo;{ABOUT_CEO_QUOTE}&rdquo;
                   </p>
                   <p className="text-sm text-slate-500">- CEO Message</p>
-                </div>
+                </div> */}
               </div>
             </FadeIn>
 
@@ -304,7 +304,7 @@ const Home = observer(function Home() {
                 <h2 className="text-accent font-semibold tracking-wide uppercase text-sm">
                   {SERVICES_BADGE}
                 </h2>
-                <h3 className="text-3xl md:text-4xl font-heading font-bold text-primary">
+                <h3 className="text-3xl md:text-4xl font-heading font-bold text-primary mb-4">
                   {SERVICES_TITLE}
                 </h3>
                 <p className="text-slate-600 text-lg">{SERVICES_DESCRIPTION}</p>
@@ -388,7 +388,7 @@ const Home = observer(function Home() {
 
         <div className="container-custom text-center space-y-8 relative z-10">
           <FadeIn direction="up">
-            <h2 className="text-3xl md:text-5xl font-heading font-bold">
+            <h2 className="text-3xl md:text-5xl font-heading font-bold text-white">
               {CONTACT_CTA_TITLE}
             </h2>
             <p className="text-xl text-slate-300 max-w-2xl mx-auto mt-4">

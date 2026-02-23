@@ -3,7 +3,7 @@ export const COMPANY_NAME = "SRR Consultancy";
 export const COMPANY_ESTABLISHED_YEAR = 2005;
 export const COMPANY_PHONE = "+91 123 456 7890";
 export const COMPANY_EMAIL = "info@srrconsultancy.com";
-export const COMPANY_ADDRESS = "123 Business Avenue, Corporate Tower, Mumbai, India - 400001";
+export const COMPANY_ADDRESS = "Tirupathur, Tamil Nadu, India - 635601";
 
 // Navigation Links
 export const NAV_LINKS = [
@@ -33,7 +33,7 @@ export const STATS = [
 export const ABOUT_BADGE = "About SRR Consultancy";
 export const ABOUT_TITLE = "Reliable Manpower Solutions Since 2005";
 export const ABOUT_DESCRIPTION =
-  "SRR Consultancy has been a pioneer in the recruitment industry, providing comprehensive manpower solutions to clients across the Middle East, Europe, and Asia. We specialize in sourcing, screening, and deploying top-tier talent that meets the specific needs of your industry.";
+  "Established in 2005, our firm was founded with a clear mission — to connect skilled Indian talent with global employment opportunities. Under the visionary leadership of our founder, we built a strong reputation as a trusted Human Resource consulting partner, primarily serving Gulf countries with reliable and efficient manpower solutions.For over two decades, we have successfully supported businesses across construction, infrastructure, and other key industries by supplying qualified, dependable, and project-ready manpower."
 
 export const ABOUT_FEATURES = [
   "ISO Certified Process",
