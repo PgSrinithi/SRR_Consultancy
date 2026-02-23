@@ -216,7 +216,7 @@ const JobsContent = observer(function JobsContent() {
         <div className="container-custom">
           <FadeIn>
             <div className="space-y-4">
-              <h1 className="text-4xl md:text-5xl font-bold">
+              <h1 className="text-4xl md:text-5xl font-bold text-white">
                 {JOBS_HERO_TITLE}
               </h1>
               <p className="text-lg text-white/90 max-w-2xl">
