@@ -9,24 +9,24 @@ export const COMPANY_ADDRESS = "Tirupathur, Tamil Nadu, India - 635601";
 export const NAV_LINKS = [
   { name: "Home", href: "/", id: "home" },
   { name: "About Us", href: "#about", id: "about" },
-  { name: "Sectors", href: "#sectors", id: "sectors" },
-  { name: "Services", href: "#services", id: "services" },
-  { name: "Clients", href: "#clients", id: "clients" },
+  // { name: "Sectors", href: "#sectors", id: "sectors" },
+  // { name: "Services", href: "#services", id: "services" },
+  { name: "Jobs", href: "/jobs", id: "jobs" },
   { name: "Contact", href: "#contact", id: "contact" },
 ];
 
 // Home Page - Hero Section
 export const HERO_BADGE_TEXT = "ESTABLISHED 2005";
-export const HERO_TITLE = "Building the Future with Global Talent";
+export const HERO_TITLE = "Building the Future with";
 export const HERO_DESCRIPTION =
   "Connecting world-class businesses with exceptional talent. Your trusted partner for international recruitment and workforce management.";
 
 // Home Page - Stats
 export const STATS = [
   { number: "18+", label: "Years Experience" },
-  { number: "50k+", label: "Workers Placed" },
-  { number: "500+", label: "Corporate Clients" },
-  { number: "25+", label: "Countries Served" },
+  { number: "2k+", label: "Workers Placed" },
+  { number: "50+", label: "Clients" },
+  { number: "15+", label: "Countries Served" },
 ];
 
 // Home Page - About Section

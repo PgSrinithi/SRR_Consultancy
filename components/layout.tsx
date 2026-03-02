@@ -21,7 +21,9 @@ import {
 } from "@/lib/constants";
 import { industryStore } from "@/stores";
 
-export default function Layout({ children }: { children: React.ReactNode }) {
+import { observer } from "mobx-react-lite";
+
+const Layout = observer(function Layout({ children }: { children: React.ReactNode }) {
   const [isScrolled, setIsScrolled] = useState(false);
   const [activeSection, setActiveSection] = useState("home");
   const pathname = usePathname();
@@ -299,4 +301,6 @@ export default function Layout({ children }: { children: React.ReactNode }) {
       </footer>
     </div>
   );
-}
+});
+
+export default Layout;
