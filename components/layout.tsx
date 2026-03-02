@@ -21,7 +21,9 @@ import {
 } from "@/lib/constants";
 import { industryStore } from "@/stores";
 
-export default function Layout({ children }: { children: React.ReactNode }) {
+import { observer } from "mobx-react-lite";
+
+const Layout = observer(function Layout({ children }: { children: React.ReactNode }) {
   const [isScrolled, setIsScrolled] = useState(false);
   const [activeSection, setActiveSection] = useState("home");
   const pathname = usePathname();
@@ -95,10 +97,12 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         </div>
       </div>
 
-      {/* Main Navigation */}
-      <header 
+      {/* Main Navigation — floating blur on scroll */}
+      <header
         className={`sticky top-0 z-50 w-full transition-all duration-300 ${
-          isScrolled ? "bg-white/95 backdrop-blur-md shadow-md py-2" : "bg-white py-4 shadow-sm"
+          isScrolled
+            ? "bg-background/80 backdrop-blur-xl border-b border-border shadow-card py-2"
+            : "bg-background py-4 shadow-sm"
         }`}
       >
         <div className="container-custom flex items-center justify-between">
@@ -299,4 +303,6 @@ export default function Layout({ children }: { children: React.ReactNode }) {
       </footer>
     </div>
   );
-}
+});
+
+export default Layout;

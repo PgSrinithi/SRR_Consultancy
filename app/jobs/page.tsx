@@ -224,14 +224,14 @@ const JobsContent = observer(function JobsContent() {
   return (
     <Layout>
       {/* Hero Section */}
-      <section className="bg-gradient-to-r from-primary to-primary/80 text-white py-12 md:py-16">
+      <section className="bg-gradient-to-r from-primary to-primary/90 text-primary-foreground py-12 md:py-16">
         <div className="container-custom">
           <FadeIn>
             <div className="space-y-4">
-              <h1 className="text-4xl md:text-5xl font-bold text-white">
+              <h1 className="text-4xl md:text-5xl font-heading font-bold text-primary-foreground">
                 {JOBS_HERO_TITLE}
               </h1>
-              <p className="text-lg text-white/90 max-w-2xl">
+              <p className="text-lg text-primary-foreground/90 max-w-2xl">
                 {JOBS_HERO_DESCRIPTION}
               </p>
             </div>
@@ -245,22 +245,18 @@ const JobsContent = observer(function JobsContent() {
           <div className="space-y-6">
             {/* Search Bar */}
             <FadeIn>
-              <div>
-                <label className="text-sm font-medium text-gray-700 mb-2 block">
-                  {JOBS_SEARCH_LABEL}
-                </label>
-                <Input
-                  type="text"
-                  placeholder={JOBS_SEARCH_PLACEHOLDER}
-                  value={searchQuery}
-                  onChange={(e) => {
-                    setSearchQuery(e.target.value);
-                    setCurrentPage(1);
-                  }}
-                  className="max-w-md"
-                  disabled={isLoading}
-                />
-              </div>
+              <Input
+                label={JOBS_SEARCH_LABEL}
+                type="text"
+                placeholder={JOBS_SEARCH_PLACEHOLDER}
+                value={searchQuery}
+                onChange={(e) => {
+                  setSearchQuery(e.target.value);
+                  setCurrentPage(1);
+                }}
+                className="max-w-md"
+                disabled={isLoading}
+              />
             </FadeIn>
 
             {/* Selected Filters Badges */}
@@ -269,7 +265,7 @@ const JobsContent = observer(function JobsContent() {
               selectedJobRoles.length > 0) && (
               <FadeIn>
                 <div className="flex flex-wrap items-center gap-3">
-                  <span className="text-sm font-medium text-gray-600">
+                  <span className="text-sm font-medium text-muted-foreground">
                     {JOBS_FILTER_LABELS.activeFilters}
                   </span>
                   {selectedIndustries.map((industryId) => (
@@ -380,4 +376,3 @@ export default function Jobs() {
     </Suspense>
   );
 }
-2;
