@@ -74,10 +74,11 @@ const Home = observer(function Home() {
   return (
     <Layout>
       {/* Hero Section */}
-      <section className="relative min-h-[85vh] w-full overflow-hidden bg-slate-900 flex items-center">
-        {/* Background Overlay */}
+      <section className="relative min-h-[85vh] w-full overflow-hidden bg-primary flex items-center">
+        {/* Background Overlay + gradient mesh */}
         <div className="absolute inset-0 z-0">
-          <div className="absolute inset-0 bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 opacity-90 z-10" />
+          <div className="absolute inset-0 bg-gradient-to-br from-primary via-primary/90 to-primary opacity-95 z-10" />
+          <div className="absolute inset-0 bg-gradient-mesh opacity-40 z-[1]" aria-hidden />
           <Image
             src={heroImage}
             alt="Background"
@@ -111,7 +112,7 @@ const Home = observer(function Home() {
               </FadeIn>
 
               <FadeIn delay={0.6} direction="up">
-                <p className="text-lg md:text-xl text-slate-300 leading-relaxed max-w-xl border-l-4 border-accent pl-6 bg-gradient-to-r from-white/5 to-transparent py-2 rounded-r-lg">
+                <p className="text-lg md:text-xl text-primary-foreground/85 leading-relaxed max-w-xl border-l-4 border-accent pl-6 bg-gradient-to-r from-white/5 to-transparent py-2 rounded-r-lg">
                   {HERO_DESCRIPTION}
                 </p>
               </FadeIn>
@@ -153,11 +154,11 @@ const Home = observer(function Home() {
       <section className="relative z-20 -mt-10 lg:-mt-20 px-4">
         <div className="container-custom">
           <FadeIn direction="up" delay={0.2}>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-8 bg-white p-8 md:p-12 rounded-3xl shadow-2xl border border-slate-100">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-8 bg-card p-8 md:p-12 rounded-3xl shadow-card-hover border border-border">
               {STATS.map((stat, i) => (
                 <div
                   key={i}
-                  className="text-center space-y-2 border-r last:border-0 border-slate-100 relative group"
+                  className="text-center space-y-2 border-r last:border-0 border-border relative group"
                 >
                   <div className="text-4xl md:text-5xl font-heading font-bold text-primary tabular-nums group-hover:scale-110 transition-transform duration-300 ease-out">
                     <AnimatedStat
@@ -165,7 +166,7 @@ const Home = observer(function Home() {
                       suffix={stat.number.replace(/\d/g, '')}
                     />
                   </div>
-                  <div className="text-xs md:text-sm text-slate-500 font-bold uppercase tracking-wider">
+                  <div className="text-xs md:text-sm text-muted-foreground font-bold uppercase tracking-wider">
                     {stat.label}
                   </div>
                 </div>
@@ -191,14 +192,14 @@ const Home = observer(function Home() {
                   className="rounded-2xl shadow-2xl w-full object-cover aspect-[4/3] border-8 border-white group-hover:rotate-1 transition-transform duration-500"
                 />
                 {/* Experience Badge */}
-                <div className="absolute -bottom-10 -left-6 bg-white p-6 rounded-xl shadow-xl border-l-4 border-accent hidden md:block animate-bounce-slow">
+                <div className="absolute -bottom-10 -left-6 bg-card p-6 rounded-xl shadow-card-hover border-l-4 border-accent hidden md:block animate-bounce-slow">
                   <div className="flex items-center gap-4">
                     <div className="bg-accent/10 p-3 rounded-full">
                       <Star className="h-8 w-8 text-accent fill-accent" />
                     </div>
                     <div>
                       <p className="font-bold text-2xl text-primary">18+ Years</p>
-                      <p className="text-sm text-slate-500">Of Excellence</p>
+                      <p className="text-sm text-muted-foreground">Of Excellence</p>
                     </div>
                   </div>
                 </div>
@@ -219,7 +220,7 @@ const Home = observer(function Home() {
               </FadeIn>
 
               <FadeIn direction="left" delay={0.3}>
-                <p className="text-slate-600 leading-relaxed text-lg">
+                <p className="text-muted-foreground leading-relaxed text-lg">
                   {ABOUT_DESCRIPTION}
                 </p>
               </FadeIn>
@@ -231,18 +232,18 @@ const Home = observer(function Home() {
                 {ABOUT_FEATURES.map((item) => (
                   <div
                     key={item}
-                    className="flex items-center gap-3 bg-slate-50 p-4 rounded-xl hover:bg-white hover:shadow-lg transition-all border border-transparent hover:border-slate-100 group"
+                    className="flex items-center gap-3 bg-muted/50 p-4 rounded-xl hover:bg-card hover:shadow-card-hover transition-all border border-transparent hover:border-border group"
                   >
                     <div className="bg-white p-2 rounded-full shadow-sm group-hover:bg-accent group-hover:text-white transition-colors">
                       <CheckCircle2 className="h-5 w-5 text-accent group-hover:text-white" />
                     </div>
-                    <span className="font-semibold text-slate-700 group-hover:text-primary transition-colors">{item}</span>
+                    <span className="font-semibold text-foreground group-hover:text-primary transition-colors">{item}</span>
                   </div>
                 ))}
               </StaggerContainer>
 
               <FadeIn direction="left" delay={0.5}>
-                <Button variant="outline" className="mt-4 rounded-full px-8 border-slate-300 hover:border-accent hover:text-accent transition-all group">
+                <Button variant="outline" className="mt-4 rounded-full px-8 border-border hover:border-accent hover:text-accent transition-all group">
                   {BUTTON_TEXT.readMore} <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
                 </Button>
               </FadeIn>
@@ -254,9 +255,9 @@ const Home = observer(function Home() {
       {/* Sectors Section */}
       <section
         id="sectors"
-        className="section-padding bg-slate-50 relative overflow-hidden"
+        className="section-padding bg-muted/30 relative overflow-hidden"
       >
-        <div className="absolute top-0 right-0 w-1/2 h-full bg-white skew-x-12 opacity-50 pointer-events-none" />
+        <div className="absolute top-0 right-0 w-1/2 h-full bg-background skew-x-12 opacity-50 pointer-events-none" />
 
         <div className="container-custom relative">
           <FadeIn direction="up">
@@ -267,7 +268,7 @@ const Home = observer(function Home() {
               <h3 className="text-3xl md:text-4xl lg:text-5xl font-heading font-bold text-primary">
                 {SECTORS_TITLE}
               </h3>
-              <p className="text-slate-600 text-lg">{SECTORS_DESCRIPTION}</p>
+              <p className="text-muted-foreground text-lg">{SECTORS_DESCRIPTION}</p>
             </div>
           </FadeIn>
 
@@ -275,12 +276,12 @@ const Home = observer(function Home() {
             {displayedSectors.map((sector, idx) => (
               <div
                 key={idx}
-                className="group relative rounded-2xl bg-white p-8 shadow-sm hover:shadow-xl transition-all duration-500 flex flex-col justify-between overflow-hidden border border-slate-100 hover:border-accent/20"
+                className="group relative rounded-2xl bg-card p-8 shadow-card hover:shadow-card-hover transition-all duration-500 flex flex-col justify-between overflow-hidden border border-border hover:border-accent/20"
               >
                 <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-accent to-transparent scale-x-0 group-hover:scale-x-100 transition-transform duration-500" />
 
                 {/* Icon Background Blob */}
-                <div className="absolute -right-4 -top-4 w-24 h-24 bg-slate-50 rounded-full group-hover:bg-accent/5 transition-colors duration-500" />
+                <div className="absolute -right-4 -top-4 w-24 h-24 bg-muted/50 rounded-full group-hover:bg-accent/5 transition-colors duration-500" />
 
                 {/* Content */}
                 <div className="relative z-10 space-y-4 flex-1">
@@ -292,7 +293,7 @@ const Home = observer(function Home() {
                     {sector?.name}
                   </h4>
 
-                  <p className="text-sm text-slate-500 line-clamp-3 leading-relaxed">
+                  <p className="text-sm text-muted-foreground line-clamp-3 leading-relaxed">
                     {sector?.description ||
                       "Explore career opportunities in this thriving industry with our specialized recruitment."}
                   </p>
@@ -305,7 +306,7 @@ const Home = observer(function Home() {
                       `/jobs?industry=${encodeURIComponent(sector?.name)}`
                     )
                   }
-                  className="inline-flex items-center gap-2 mt-8 text-sm font-bold text-slate-400 group-hover:text-accent transition-colors"
+                  className="inline-flex items-center gap-2 mt-8 text-sm font-bold text-muted-foreground group-hover:text-accent transition-colors"
                 >
                   {BUTTON_TEXT.viewPositions}
                   <ArrowRight className="h-4 w-4 transform group-hover:translate-x-1 transition-transform" />
@@ -320,7 +321,7 @@ const Home = observer(function Home() {
                 <Button
                   onClick={() => setShowAllIndustries(true)}
                   variant="outline"
-                  className="border-slate-300 text-slate-600 hover:border-primary hover:text-primary hover:bg-primary/5 rounded-full px-10 h-12 transition-all"
+                  className="border-border text-muted-foreground hover:border-primary hover:text-primary hover:bg-primary/5 rounded-full px-10 h-12 transition-all"
                 >
                   {BUTTON_TEXT.viewAllIndustries}
                 </Button>
@@ -330,13 +331,16 @@ const Home = observer(function Home() {
         </div>
       </section>
 
+      {/* Gradient divider */}
+      <div className="h-px w-full bg-gradient-to-r from-transparent via-primary/40 to-transparent my-0" aria-hidden />
+
       {/* Client Logos Carousel */}
       <ClientLogosCarousel />
 
       {/* Services Section */}
-      <section id="services" className="section-padding bg-slate-50 relative overflow-hidden">
+      <section id="services" className="section-padding bg-muted/30 relative overflow-hidden">
         {/* Background Pattern */}
-        <div className="absolute inset-0 opacity-[0.03] bg-[radial-gradient(#475569_1px,transparent_1px)] [background-size:20px_20px]" />
+        <div className="absolute inset-0 opacity-[0.03] bg-[radial-gradient(hsl(var(--primary))_1px,transparent_1px)] [background-size:20px_20px]" />
 
         <div className="container-custom relative z-10">
           <div className="text-center max-w-3xl mx-auto mb-16 space-y-4">
@@ -347,7 +351,7 @@ const Home = observer(function Home() {
               <h3 className="text-3xl md:text-4xl lg:text-5xl font-heading font-bold text-primary">
                 {SERVICES_TITLE}
               </h3>
-              <p className="text-slate-600 text-lg">{SERVICES_DESCRIPTION}</p>
+              <p className="text-muted-foreground text-lg">{SERVICES_DESCRIPTION}</p>
             </FadeIn>
           </div>
 
@@ -356,11 +360,11 @@ const Home = observer(function Home() {
               {SERVICES.map((service, i) => (
                 <div
                   key={i}
-                  className="group relative bg-white p-8 rounded-2xl shadow-sm hover:shadow-2xl transition-all duration-300 border border-slate-100 overflow-hidden"
+                  className="group relative bg-card p-8 rounded-2xl shadow-card hover:shadow-card-hover transition-all duration-300 border border-border overflow-hidden"
                 >
                   <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-accent to-primary transform scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-left" />
 
-                  <div className="mb-6 inline-flex items-center justify-center w-14 h-14 rounded-xl bg-slate-50 text-primary group-hover:bg-accent group-hover:text-white transition-colors duration-300">
+                  <div className="mb-6 inline-flex items-center justify-center w-14 h-14 rounded-xl bg-muted/80 text-primary group-hover:bg-accent group-hover:text-white transition-colors duration-300">
                     {i === 0 && <Users className="h-7 w-7" />}
                     {i === 1 && <Globe2 className="h-7 w-7" />}
                     {i === 2 && <TrendingUp className="h-7 w-7" />}
@@ -370,11 +374,11 @@ const Home = observer(function Home() {
                     {service.title}
                   </h4>
 
-                  <p className="text-slate-600 leading-relaxed mb-6">
+                  <p className="text-muted-foreground leading-relaxed mb-6">
                     {service.description}
                   </p>
 
-                  <div className="flex items-center text-sm font-bold text-slate-400 group-hover:text-accent transition-colors gap-2">
+                  <div className="flex items-center text-sm font-bold text-muted-foreground group-hover:text-accent transition-colors gap-2">
                     <span className="uppercase tracking-wider">Learn More</span>
                     <ArrowRight className="h-4 w-4 transform group-hover:translate-x-1 transition-transform" />
                   </div>
@@ -393,14 +397,14 @@ const Home = observer(function Home() {
                 height={600}
                 className="absolute inset-0 w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105 -z-20"
               />
-              <div className="absolute inset-0 bg-slate-900/70 -z-10" />
-              <div className="absolute inset-0 bg-gradient-to-r from-slate-900/90 to-transparent -z-10" />
+              <div className="absolute inset-0 bg-primary/70 -z-10" />
+              <div className="absolute inset-0 bg-gradient-to-r from-primary/90 to-transparent -z-10" />
 
               <div className="relative z-10 h-full flex flex-col justify-center p-8 md:p-16 max-w-2xl">
                 <h3 className="text-3xl md:text-5xl font-heading font-bold text-white mb-6 leading-tight">
                   {SERVICES_CTA_TITLE}
                 </h3>
-                <p className="text-slate-200 text-lg md:text-xl mb-8 font-light leading-relaxed">
+                <p className="text-primary-foreground/90 text-lg md:text-xl mb-8 font-light leading-relaxed">
                   {SERVICES_CTA_DESCRIPTION}
                 </p>
                 <div className="flex flex-wrap gap-4">
@@ -440,7 +444,7 @@ const Home = observer(function Home() {
             <h2 className="text-4xl md:text-5xl lg:text-6xl font-heading font-bold text-white tracking-tight">
               {CONTACT_CTA_TITLE}
             </h2>
-            <p className="text-xl text-slate-300 max-w-2xl mx-auto mt-6 font-light">
+            <p className="text-xl text-primary-foreground/80 max-w-2xl mx-auto mt-6 font-light">
               {CONTACT_CTA_DESCRIPTION}
             </p>
           </FadeIn>
@@ -451,7 +455,7 @@ const Home = observer(function Home() {
                 <Button
                   variant="secondary"
                   size="lg"
-                  className="h-16 px-12 text-lg rounded-full font-bold text-primary bg-white hover:bg-slate-100 shadow-2xl hover:shadow-white/20 transition-all hover:-translate-y-1"
+                  className="h-16 px-12 text-lg rounded-full font-bold text-primary bg-card hover:bg-muted shadow-card-hover transition-all hover:-translate-y-0.5"
                 >
                   {BUTTON_TEXT.contactSupport}
                 </Button>
