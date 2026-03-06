@@ -42,37 +42,38 @@ const ClientLogosCarousel = observer(function ClientLogosCarousel() {
   };
 
   return (
-    <section id="clients" className="section-padding bg-gradient-to-b from-slate-50 to-white">
-      <div className="mx-4 md:mx-8 lg:mx-12">
+    <section id="clients" className="py-16 md:py-20 bg-background">
+      <div className="container-custom">
         <FadeIn direction="up">
-          <div className="text-center mb-12">
-            <h2 className="text-accent font-semibold tracking-wide uppercase text-sm mb-3">
-              TRUSTED PARTNERS
-            </h2>
-            <h3 className="text-3xl md:text-4xl font-heading font-bold text-primary">
-              Leading Companies We Work With
-            </h3>
+          <div className="text-center mb-10">
+            <p className="text-sm text-muted-foreground font-medium">
+              Trusted by leading companies worldwide
+            </p>
           </div>
         </FadeIn>
 
-        {/* Single Row - Continuous Infinite */}
+        {/* Minimal marquee */}
         <FadeIn direction="up" delay={0.1}>
-          <div className="relative overflow-hidden rounded-xl bg-white p-4 sm:p-6 md:p-8 shadow-md">
+          <div className="relative overflow-hidden">
+            {/* Fade edges */}
+            <div className="absolute left-0 top-0 bottom-0 w-20 bg-gradient-to-r from-background to-transparent z-10 pointer-events-none" />
+            <div className="absolute right-0 top-0 bottom-0 w-20 bg-gradient-to-l from-background to-transparent z-10 pointer-events-none" />
+            
             <div className="marquee">
               <div className="marquee-track">
                 {duplicatedLogos.map((logo, idx) => (
                   <button
                     type="button"
                     key={`${logo.id}-loop-${idx}`}
-                    className="flex-shrink-0 h-16 w-32 sm:h-20 sm:w-40 flex items-center justify-center bg-gray-50 rounded-lg border border-slate-200 hover:border-primary hover:bg-slate-100 transition-all duration-300"
+                    className="flex-shrink-0 h-12 w-28 sm:h-14 sm:w-36 flex items-center justify-center grayscale opacity-60 hover:grayscale-0 hover:opacity-100 transition-all duration-300 cursor-pointer"
                     onClick={() => openLogoModal(logo)}
                   >
                     <Image
                       src={logo.image}
                       alt={logo.name}
-                      width={160}
-                      height={80}
-                      className="object-contain h-full w-full p-4 hover:scale-110 transition-transform duration-300"
+                      width={144}
+                      height={56}
+                      className="object-contain h-full w-full p-2"
                       onError={(e) => {
                         const target = e.target as HTMLImageElement;
                         target.style.display = "none";
@@ -87,33 +88,33 @@ const ClientLogosCarousel = observer(function ClientLogosCarousel() {
 
         {selectedLogo && (
           <div
-            className="fixed inset-0 z-[100] flex items-center justify-center bg-black/70 p-4"
+            className="fixed inset-0 z-[100] flex items-center justify-center bg-foreground/80 backdrop-blur-sm p-4"
             onClick={closeLogoModal}
           >
             <div
-              className="relative w-full max-w-3xl rounded-2xl bg-white p-6 shadow-2xl"
+              className="relative w-full max-w-2xl rounded-2xl bg-card p-8 shadow-2xl border border-border"
               onClick={(event) => event.stopPropagation()}
             >
               <button
                 type="button"
                 aria-label="Close enlarged logo"
-                className="absolute right-3 top-3 flex h-10 w-10 items-center justify-center rounded-full border border-slate-300 bg-white text-2xl leading-none text-slate-700 hover:bg-slate-100"
+                className="absolute right-4 top-4 flex h-9 w-9 items-center justify-center rounded-full bg-muted hover:bg-muted/80 text-muted-foreground hover:text-foreground text-lg leading-none transition-colors"
                 onClick={closeLogoModal}
               >
                 ×
               </button>
 
-              <div className="flex min-h-64 items-center justify-center pt-6">
+              <div className="flex min-h-48 items-center justify-center pt-4">
                 {isModalImageError ? (
-                  <p className="text-center text-slate-600">Unable to load this logo.</p>
+                  <p className="text-center text-muted-foreground">Unable to load this logo.</p>
                 ) : (
                   <Image
                     key={`modal-${selectedLogo.id}`}
                     src={selectedLogo.image}
                     alt={selectedLogo.name}
-                    width={720}
-                    height={360}
-                    className="h-auto max-h-[60vh] w-auto max-w-full object-contain"
+                    width={600}
+                    height={300}
+                    className="h-auto max-h-[50vh] w-auto max-w-full object-contain"
                     onError={() => setIsModalImageError(true)}
                   />
                 )}
@@ -126,20 +127,20 @@ const ClientLogosCarousel = observer(function ClientLogosCarousel() {
           .marquee {
             position: relative;
             overflow: hidden;
-            height: 4rem;
+            height: 3.5rem;
           }
 
           @media (min-width: 640px) {
             .marquee {
-              height: 5rem;
+              height: 4rem;
             }
           }
 
           .marquee-track {
             display: flex;
-            gap: 2rem;
+            gap: 3rem;
             width: max-content;
-            animation-duration: 60s;
+            animation-duration: 45s;
             animation-timing-function: linear;
             animation-iteration-count: infinite;
             animation-name: marquee;
@@ -157,6 +158,12 @@ const ClientLogosCarousel = observer(function ClientLogosCarousel() {
 
           .marquee:hover .marquee-track {
             animation-play-state: paused;
+          }
+
+          @media (prefers-reduced-motion: reduce) {
+            .marquee-track {
+              animation: none;
+            }
           }
         `}</style>
       </div>

@@ -223,15 +223,23 @@ const JobsContent = observer(function JobsContent() {
 
   return (
     <Layout>
-      {/* Hero Section */}
-      <section className="bg-gradient-to-r from-primary to-primary/90 text-primary-foreground py-12 md:py-16">
-        <div className="container-custom">
+      {/* Modern Hero Section */}
+      <section className="relative bg-hero-gradient text-white py-16 md:py-20 overflow-hidden">
+        {/* Gradient orbs */}
+        <div className="absolute top-0 right-0 w-96 h-96 bg-accent/10 rounded-full blur-[120px] pointer-events-none" />
+        <div className="absolute bottom-0 left-1/4 w-64 h-64 bg-secondary/10 rounded-full blur-[100px] pointer-events-none" />
+        
+        <div className="container-custom relative z-10">
           <FadeIn>
-            <div className="space-y-4">
-              <h1 className="text-4xl md:text-5xl font-heading font-bold text-primary-foreground">
+            <div className="space-y-4 max-w-2xl">
+              <span className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-widest text-white/60">
+                <span className="w-8 h-px bg-accent" />
+                Career Opportunities
+              </span>
+              <h1 className="text-3xl md:text-4xl lg:text-5xl font-heading font-bold text-white leading-tight">
                 {JOBS_HERO_TITLE}
               </h1>
-              <p className="text-lg text-primary-foreground/90 max-w-2xl">
+              <p className="text-lg text-white/70 leading-relaxed">
                 {JOBS_HERO_DESCRIPTION}
               </p>
             </div>
@@ -240,7 +248,7 @@ const JobsContent = observer(function JobsContent() {
       </section>
 
       {/* Jobs Section with Filters */}
-      <section className="py-12 md:py-20 bg-background">
+      <section className="py-12 md:py-16 bg-background">
         <div className="container-custom">
           <div className="space-y-6">
             {/* Search Bar */}
