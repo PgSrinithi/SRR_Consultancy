@@ -11,3 +11,4 @@ vite.config.ts.*
 out
 next-env.d.ts
 tsconfig.tsbuildinfo
+package-lock.json

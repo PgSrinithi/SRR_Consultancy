@@ -66,6 +66,9 @@ export function JobFilters(props: JobFiltersProps) {
 
   const areAllSelected = (allIds: string[], selected: string[]) =>
     allIds.length > 0 && allIds.every((id) => selected.includes(id));
+  const industrySelectAllId = "industry-select-all";
+  const locationSelectAllId = "location-select-all";
+  const jobRoleSelectAllId = "job-role-select-all";
 
   const toggleIndustry = (industryId: string) => {
     setSelectedIndustries((prev: string[]) =>
@@ -96,7 +99,7 @@ export function JobFilters(props: JobFiltersProps) {
 
   const FilterLoader = () => (
     <div className="flex justify-center py-6">
-      <div className="loader ease-linear rounded-full border-4 border-t-4 border-gray-200 h-8 w-8"></div>
+      <div className="w-6 h-6 border-2 border-primary/20 border-t-primary rounded-full animate-spin"></div>
     </div>
   );
 
@@ -104,10 +107,10 @@ export function JobFilters(props: JobFiltersProps) {
     <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
       {/* Sidebar Filters */}
       <FadeIn className="lg:col-span-1">
-        <div className="sticky top-20 space-y-6">
+        <div className="sticky top-24 space-y-4">
           {/* Industry Filter */}
-          <div className="bg-white p-4 rounded-lg border border-gray-200">
-            <h3 className="font-semibold text-gray-900 mb-4">
+          <div className="bg-card p-5 rounded-2xl border border-border/50 shadow-sm">
+            <h3 className="font-semibold text-foreground text-sm mb-4">
               {JOBS_FILTER_LABELS.industry}
             </h3>
 
@@ -118,6 +121,7 @@ export function JobFilters(props: JobFiltersProps) {
                 {/* Select All */}
                 <div className="flex items-center border-b pb-2 mb-2">
                   <Checkbox
+                      id={industrySelectAllId}
                     checked={areAllSelected(
                       industryStore.industries.map((i) => i.id),
                       selectedIndustries
@@ -129,7 +133,7 @@ export function JobFilters(props: JobFiltersProps) {
                       setCurrentPage(1);
                     }}
                   />
-                  <label className="ml-2 text-sm font-medium text-gray-800 cursor-pointer">
+                  <label htmlFor={industrySelectAllId} className="ml-2 text-sm font-medium text-foreground cursor-pointer">
                     Select All
                   </label>
                 </div>
@@ -144,7 +148,7 @@ export function JobFilters(props: JobFiltersProps) {
                     />
                     <label
                       htmlFor={`industry-${industry.id}`}
-                      className="ml-2 text-sm text-gray-700 cursor-pointer"
+                      className="ml-2 text-sm text-muted-foreground cursor-pointer"
                     >
                       {industry.name}
                     </label>
@@ -155,8 +159,8 @@ export function JobFilters(props: JobFiltersProps) {
           </div>
 
           {/* Location Filter */}
-          <div className="bg-white p-4 rounded-lg border border-gray-200">
-            <h3 className="font-semibold text-gray-900 mb-4">
+          <div className="bg-card p-5 rounded-2xl border border-border/50 shadow-sm">
+            <h3 className="font-semibold text-foreground text-sm mb-4">
               {JOBS_FILTER_LABELS.location}
             </h3>
 
@@ -166,6 +170,7 @@ export function JobFilters(props: JobFiltersProps) {
               <div className="space-y-3">
                 <div className="flex items-center border-b pb-2 mb-2">
                   <Checkbox
+                    id={locationSelectAllId}
                     checked={areAllSelected(
                       locations.map((l) => l.id),
                       selectedLocations
@@ -177,7 +182,7 @@ export function JobFilters(props: JobFiltersProps) {
                       setCurrentPage(1);
                     }}
                   />
-                  <label className="ml-2 text-sm font-medium text-gray-800">
+                  <label htmlFor={locationSelectAllId} className="ml-2 text-sm font-medium text-foreground cursor-pointer">
                     Select All
                   </label>
                 </div>
@@ -191,7 +196,7 @@ export function JobFilters(props: JobFiltersProps) {
                     />
                     <label
                       htmlFor={`location-${location.id}`}
-                      className="ml-2 text-sm text-gray-700"
+                      className="ml-2 text-sm text-muted-foreground cursor-pointer"
                     >
                       {location.name}
                     </label>
@@ -202,8 +207,8 @@ export function JobFilters(props: JobFiltersProps) {
           </div>
 
           {/* Job Role Filter */}
-          <div className="bg-white p-4 rounded-lg border border-gray-200">
-            <h3 className="font-semibold text-gray-900 mb-4">
+          <div className="bg-card p-5 rounded-2xl border border-border/50 shadow-sm">
+            <h3 className="font-semibold text-foreground text-sm mb-4">
               {JOBS_FILTER_LABELS.jobRole}
             </h3>
 
@@ -213,6 +218,7 @@ export function JobFilters(props: JobFiltersProps) {
               <div className="space-y-3">
                 <div className="flex items-center border-b pb-2 mb-2">
                   <Checkbox
+                    id={jobRoleSelectAllId}
                     checked={areAllSelected(
                       jobRoles.map((j) => j.id),
                       selectedJobRoles
@@ -224,7 +230,7 @@ export function JobFilters(props: JobFiltersProps) {
                       setCurrentPage(1);
                     }}
                   />
-                  <label className="ml-2 text-sm font-medium text-gray-800">
+                  <label htmlFor={jobRoleSelectAllId} className="ml-2 text-sm font-medium text-foreground cursor-pointer">
                     Select All
                   </label>
                 </div>
@@ -238,7 +244,7 @@ export function JobFilters(props: JobFiltersProps) {
                     />
                     <label
                       htmlFor={`jobRole-${jobRole.id}`}
-                      className="ml-2 text-sm text-gray-700"
+                      className="ml-2 text-sm text-muted-foreground cursor-pointer"
                     >
                       {jobRole.name}
                     </label>
@@ -255,52 +261,46 @@ export function JobFilters(props: JobFiltersProps) {
         <div className="space-y-4">
           {!isMounted ? (
             <div className="text-center py-12">
-              <p className="text-gray-500 text-lg">Loading jobs...</p>
+              <p className="text-muted-foreground text-lg">Loading jobs...</p>
             </div>
           ) : jobPostingStore.loading ? (
-            <div className="text-center py-12">
-              <div className="loader ease-linear rounded-full border-8 border-t-8 border-gray-200 h-16 w-16 mx-auto"></div>
+            <div className="text-center py-16">
+              <div className="w-10 h-10 border-2 border-primary/20 border-t-primary rounded-full animate-spin mx-auto"></div>
             </div>
           ) : paginatedJobs.length > 0 ? (
             paginatedJobs.map((job) => (
               <FadeIn key={job.id}>
-                <Card className="p-6 hover:shadow-md transition-shadow duration-300">
+                <Card className="p-5 md:p-6 rounded-2xl border border-border/50 shadow-sm hover:shadow-card-hover hover:border-border transition-all duration-300">
                   <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-                    <div className="flex-1">
-                      <h3 className="text-xl font-bold text-primary mb-2">
+                    <div className="flex-1 min-w-0">
+                      <h3 className="text-lg font-semibold text-foreground mb-2">
                         {job.jobRoleName}
                       </h3>
-                      <div className="flex flex-col md:flex-row md:items-center gap-2 md:gap-6 text-gray-600">
-                        <div className="flex items-center gap-2">
-                          <span className="font-medium">
-                            {JOBS_PAGE_TEXT.industry}:
-                          </span>
-                          <span>{job.industryName}</span>
-                        </div>
-                        <div className="flex items-center gap-2">
-                          <span className="font-medium">
-                            {JOBS_PAGE_TEXT.location}:
-                          </span>
-                          <span>{job.locationName}</span>
-                        </div>
-                        <div className="flex items-center gap-2">
-                          <span className="font-medium">Openings:</span>
-                          <span className="text-primary font-semibold">
-                            {job.Openings}
-                          </span>
-                        </div>
+                      <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-muted-foreground">
+                        <span className="inline-flex items-center gap-1.5">
+                          <span className="w-1.5 h-1.5 rounded-full bg-accent" />
+                          {job.industryName}
+                        </span>
+                        <span className="inline-flex items-center gap-1.5">
+                          <span className="w-1.5 h-1.5 rounded-full bg-secondary" />
+                          {job.locationName}
+                        </span>
+                        <span className="text-primary font-medium">
+                          {job.Openings} {job.Openings === 1 ? 'opening' : 'openings'}
+                        </span>
                       </div>
                     </div>
-                    <div className="flex flex-col gap-2 md:flex-row">
+                    <div className="flex items-center gap-2 shrink-0">
                       <Button
                         onClick={() => handleViewJob(job)}
                         variant="outline"
-                        className="cursor-pointer"
+                        size="sm"
+                        className="rounded-full px-4 border-border hover:border-primary cursor-pointer"
                       >
                         {JOBS_PAGE_TEXT.viewButton}
                       </Button>
                       <JobApplicationModal jobTitle={job.jobRoleName}>
-                        <Button className="bg-primary hover:bg-primary/90 text-white whitespace-nowrap cursor-pointer">
+                        <Button size="sm" className="bg-accent hover:bg-accent/90 text-accent-foreground rounded-full px-5 font-medium cursor-pointer">
                           {JOBS_PAGE_TEXT.applyButton}
                         </Button>
                       </JobApplicationModal>
@@ -311,7 +311,7 @@ export function JobFilters(props: JobFiltersProps) {
             ))
           ) : (
             <div className="text-center py-12">
-              <p className="text-gray-500 text-lg">
+              <p className="text-muted-foreground text-lg">
                 {JOBS_PAGE_TEXT.noJobsFound}
               </p>
             </div>
@@ -379,7 +379,7 @@ export function JobFilters(props: JobFiltersProps) {
         {/* Results Count */}
         {filteredJobs.length > 0 && (
           <FadeIn>
-            <div className="text-center text-gray-600 mt-8">
+            <div className="text-center text-muted-foreground mt-8">
               <p>
                 {JOBS_PAGE_TEXT.showing}{" "}
                 <span className="font-semibold">

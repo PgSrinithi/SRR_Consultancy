@@ -1,23 +1,28 @@
-"use client"
+"use client";
 
-import * as React from "react"
+import * as React from "react";
 
-import { cn } from "@/lib/utils"
+import { cn } from "@/lib/utils";
 
-const Card = React.forwardRef<
-  HTMLDivElement,
-  React.HTMLAttributes<HTMLDivElement>
->(({ className, ...props }, ref) => (
-  <div
-    ref={ref}
-    className={cn(
-      "rounded-xl border bg-card text-card-foreground shadow",
-      className
-    )}
-    {...props}
-  />
-))
-Card.displayName = "Card"
+interface CardProps extends React.HTMLAttributes<HTMLDivElement> {
+  hover?: boolean;
+}
+
+const Card = React.forwardRef<HTMLDivElement, CardProps>(
+  ({ className, hover = true, ...props }, ref) => (
+    <div
+      ref={ref}
+      className={cn(
+        "rounded-2xl border border-border bg-card text-card-foreground shadow-card backdrop-blur-sm",
+        hover &&
+          "transition-all duration-300 hover:shadow-card-hover hover:-translate-y-0.5 hover:border-muted-foreground/20",
+        className
+      )}
+      {...props}
+    />
+  )
+);
+Card.displayName = "Card";
 
 const CardHeader = React.forwardRef<
   HTMLDivElement,
